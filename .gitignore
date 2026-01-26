@@ -1,40 +1,61 @@
+# ----------------------------
 # Node
+# ----------------------------
 node_modules/
 
-# Env files
+# ----------------------------
+# Environment variables
+# ----------------------------
 .env
 .env.local
 .env.development.local
 .env.test.local
 .env.production.local
 
+# ----------------------------
 # Logs
+# ----------------------------
 npm-debug.log*
 yarn-debug.log*
 yarn-error.log*
 pnpm-debug.log*
 
-# Build outputs
+# ----------------------------
+# Next.js build outputs
+# ----------------------------
+.next/
+out/
 dist/
 build/
-.out/
 coverage/
 
-# Vite cache
+# ----------------------------
+# Cache / tooling
+# ----------------------------
+.eslintcache
+.cache/
 .vite/
 
+# ----------------------------
 # OS files
+# ----------------------------
 .DS_Store
 Thumbs.db
 
+# ----------------------------
 # IDE / Editor
+# ----------------------------
 .vscode/
 .idea/
-
-# Prisma / DB (if you use)
-prisma/migrations/
-
-# Temporary files
-*.tmp
 *.swp
 
+# ----------------------------
+# Prisma / DB (if used)
+# ----------------------------
+prisma/migrations/
+
+# ----------------------------
+# Temporary files
+# ----------------------------
+*.tmp
+*.log

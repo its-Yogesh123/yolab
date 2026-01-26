@@ -8,7 +8,7 @@
 ![Node.js](https://img.shields.io/badge/Backend-Node.js-green)
 ![Express](https://img.shields.io/badge/Framework-Express.js-lightgrey)
 ![React](https://img.shields.io/badge/Frontend-React-blue)
-![Vite](https://img.shields.io/badge/Build-Vite-purple)
+![Next.Js](https://img.shields.io/badge/Build-Next.js-purple)
 ![Architecture](https://img.shields.io/badge/Architecture-Modular%20Monolith-yellow)
 ![Future](https://img.shields.io/badge/Future-Microservices-orange)
 
