@@ -15,20 +15,12 @@ const userSchema = new mongoose.Schema({
         required: true,
         select: false
     },
-    createdAt: {
-        type: Date,
-        default: Date.now
-    },
-    updatedAt: {
-        type: Date,
-        default: Date.now
-    },
     role: {
         type: String,
         enum: ['admin', 'user'],
         default: 'user'
     }
-});
+}, { timestamps: true });
 
 const User = mongoose.model('User', userSchema);
 export default User;

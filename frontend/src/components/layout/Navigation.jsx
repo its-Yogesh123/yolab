@@ -15,10 +15,7 @@ const NavigationMenu = () => {
       name: 'Products',
       hasDropdown: true,
       dropdownItems: [
-        { name: 'Web Development', href: '#' },
-        { name: 'Mobile Apps', href: '#' },
-        { name: 'UI/UX Design', href: '#' },
-        { name: 'Cloud Services', href: '#' },
+        { name: 'SnipShare', href: '#' },
       ]
     },
     {
@@ -27,7 +24,7 @@ const NavigationMenu = () => {
       dropdownItems: [
         { name: 'QR Generator', href: '#' },
         { name: 'Get Short URL', href: '#' },
-        { name: 'Image editor', href: '#' },
+        { name: 'Dynamic Resourse Locator', href: '#' },
       ]
     },
     {

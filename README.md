@@ -47,8 +47,9 @@ This design allows easy migration to microservices in the future without major r
 - Coming Soon...😎
 ## Upcoming Services 
 
-- QR Code Generator  
-- URL Shortener  
+
+- URL Shortener 
+- QR Code Generator   
 - Common UI for all tools  
 - Modular backend design  
 - Future-ready for microservices (Strangler Pattern)

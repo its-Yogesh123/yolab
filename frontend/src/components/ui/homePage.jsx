@@ -1,7 +1,7 @@
 "use client";
 import React from "react";
-import NavigationMenu from "./Navigation";
-import Footer from "./Footer";
+import NavigationMenu from "../layout/Navigation";
+import Footer from "../layout/Footer";
 import MainBody from "./mainBody";
 export function LandingPage() {
   return (
