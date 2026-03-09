@@ -3,6 +3,7 @@ import mongoose from "mongoose";
 import dotenv from "dotenv";
 import userRoutes from "./modules/users/user.route.js";
 import authRoutes from "./modules/auth/auth.routes.js";
+import srv001Routes from "./modules/short-url/srv001.routes.js"
 import {isLoggedIn} from "./modules/auth/middlewares/authenticate.js"
 import {isAuthorize} from "./modules/auth/middlewares/authorize.js"
 const app = express();
@@ -23,7 +24,8 @@ app.use(express.urlencoded({ extended: false }));
 /************************** Middleware  End ******************/
 /************************** Routes  Start ******************/
 app.use("/api/users", userRoutes);
-app.use("/auth", authRoutes);
+app.use("/auth",authRoutes);
+app.use("/srv001",isLoggedIn,srv001Routes);
 /************************** Routes  End ******************/
 
 /************************** Server Start ******************/
@@ -37,7 +39,7 @@ app.get('/',(req,res)=>{
 app.get("/admin",isLoggedIn,(req,res)=>{
     return res.status(200).json({'message':"Success"});
 });
-app.get("/dash",isLoggedIn,isAuthorize("admin","user"),(req,res)=>{
+app.get("/dash",isLoggedIn,isAuthorize("admin"),(req,res)=>{
     return res.status(200).json({'message':"Success"});
 });
 app.listen(8000,()=>{console.log("Server Started")});

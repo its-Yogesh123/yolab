@@ -10,9 +10,19 @@ const userSchema = new mongoose.Schema({
         required: true,
         unique: true
     },
+    authProvider: {
+        type:String,
+        enum: ["local", "auth0"],
+        required: true,
+
+    },
+    auth0Id:{
+        type : String,
+        unique: true,
+        sparse: true 
+    },
     password: {
         type: String,
-        required: true,
         select: false
     },
     role: {

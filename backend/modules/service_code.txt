@@ -1,0 +1,5 @@
+srv001 -> short-url-service
+srv002 -> 
+
+
+srv101 -> yoAuth - Authentication as a service

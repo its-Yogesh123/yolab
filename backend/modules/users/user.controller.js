@@ -11,7 +11,7 @@ export const createUser = async (req, res) => {
             return res.status(400).json({ message: "All fields are required" });
         }
         const hashedPassword = await bcrypt.hash(password, 10);
-        newUser = await User.create({ name, email, password: hashedPassword });
+        const newUser = await User.create({ name, email, password: hashedPassword ,authProvider: "local"});
         return res.status(201).json({ newUser });
     } catch (error) {
         return res.status(500).json({ message: error.message });
