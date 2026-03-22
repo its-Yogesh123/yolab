@@ -23,7 +23,7 @@ Everything you need to build something great.
         <button
           className="text-white text-2xl rounded-lg border border-neutral-800 focus:ring-2 focus:ring-teal-500 
           w-full relative z-10 mt-4  bg-neutral-950 py-1.5
-          ">
+          " >
             Get Started
           </button>
       </div>

@@ -22,6 +22,7 @@ const NavigationMenu = () => {
       name: 'Services',
       hasDropdown: true,
       dropdownItems: [
+        { name: 'YoAuth', href: '#' },
         { name: 'QR Generator', href: '#' },
         { name: 'Get Short URL', href: '#' },
         { name: 'Dynamic Resourse Locator', href: '#' },
