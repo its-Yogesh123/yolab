@@ -1,6 +1,6 @@
-import {LandingPage} from "@/components/ui/homePage"
+
 export default function Home() {
   return (
-    <LandingPage />
+    <h1 > Hello</h1>
   );
 }
