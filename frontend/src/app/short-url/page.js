@@ -1,7 +1,7 @@
 "use client"
 export default function Home() {
     return (
-      <LandingPage />
+      <h1> Hello</h1>
     );
   }
   
