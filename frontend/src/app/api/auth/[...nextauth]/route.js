@@ -13,53 +13,9 @@ export const authOptions = {
       clientId: process.env.GOOGLE_CLIENT_ID,
       clientSecret: process.env.GOOGLE_CLIENT_SECRET,
     }),
-    CredentialsProvider({
-      id: "credentials",
-      name: "Email and password",
-      credentials: {
-        email: { label: "Email", type: "email" },
-        password: { label: "Password", type: "password" },
-      },
-      async authorize(credentials) {
-        if (!credentials?.email || !credentials?.password) return null;
-        try {
-          const res = await fetch(`${apiBase}/auth/login`, {
-            method: "POST",
-            headers: { "Content-Type": "application/x-www-form-urlencoded" },
-            body: new URLSearchParams({
-              email: credentials.email,
-              password: credentials.password,
-            }),
-          });
-          if (!res.ok) return null;
-          const data = await res.json();
-          if (!data?.user) return null;
-          return {
-            id: String(data.user.id),
-            email: data.user.email,
-            name: data.user.name ?? data.user.email,
-          };
-        } catch {
-          return null;
-        }
-      },
-    }),
   ],
-  session: { strategy: "jwt" },
-  callbacks: {
-    async jwt({ token, user }) {
-      if (user) {
-        token.id = user.id;
-      }
-      return token;
-    },
-    async session({ session, token }) {
-      if (session.user) {
-        session.user.id = token.id;
-      }
-      return session;
-    },
-  },
+
+  secret: process.env.NEXTAUTH_SECRET, // ⚡ important in production
 };
 
 const handler = NextAuth(authOptions);
