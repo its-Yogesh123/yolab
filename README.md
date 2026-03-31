@@ -26,6 +26,7 @@ The goal of YoLab is to offer multiple lightweight services in one platform whil
 - [Introduction](#introduction)
 - [Features](#features)
 - [Architecture](#architecture)
+- [Flow Chart](#diagram)
 - [Tech Stack](#tech-stack)
 - [Project Structure](#project-structure)
 - [Setup & Installation](#setup--installation)
@@ -64,18 +65,21 @@ This design allows easy migration to microservices in the future without major r
 
 ---
 
+## Diagram
+
+![Project Diagram](./design.png)
+---
 ## Tech Stack
 
 **Frontend:**
-- React (Vite)
-- React Router
-- Axios
+- Next Js
 
 **Backend:**
 - Node.js
 - Express.js
 
 **Other:**
+- MongoDB
 - Git for version control
 - Apache License 2.0
 
