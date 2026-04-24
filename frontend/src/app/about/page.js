@@ -1,6 +1,6 @@
 "use client"
 import SignInForm from "@/components/ui/signin";
-import { useSession ,signIn} from "next-auth/react";
+import { useSession,signOut} from "next-auth/react";
 
 const About = ()=>{
     const session = useSession();
@@ -18,6 +18,7 @@ const About = ()=>{
         <h1> Hello {session?.data?.user.name}</h1>
         <h1> {session?.data?.user.email} </h1>
         <img src={session.data?.user.image} alt="Sorry" width={120}/>
+        <button onClick={() => signOut()}>Sign Out</button>
         </>
         );
     }

@@ -22,11 +22,12 @@ export default function SignInForm() {
         password,
         redirect: false,
       });
+      console.log(res);
       if (res?.error) {
         setError("Invalid email or password.");
         return;
       }
-      router.push("/");
+      router.push("/about");
       router.refresh();
     } finally {
       setLoading(false);
@@ -91,7 +92,7 @@ export default function SignInForm() {
               value={password}
               onChange={(e) => setPassword(e.target.value)}
               className="w-full rounded-lg border border-neutral-800 bg-neutral-950/50 px-3 py-2.5 text-sm text-foreground placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-teal-500/50"
-              placeholder="••••••••"
+              placeholder="Password"
             />
           </div>
 
