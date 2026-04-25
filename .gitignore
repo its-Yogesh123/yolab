@@ -1,5 +1,5 @@
 # ----------------------------
-# Node
+# Node modules
 # ----------------------------
 node_modules/
 
@@ -7,10 +7,8 @@ node_modules/
 # Environment variables
 # ----------------------------
 .env
-.env.local
-.env.development.local
-.env.test.local
-.env.production.local
+.env.*
+!.env.example
 
 # ----------------------------
 # Logs
@@ -21,20 +19,24 @@ yarn-error.log*
 pnpm-debug.log*
 
 # ----------------------------
-# Next.js build outputs
+# Build outputs
 # ----------------------------
-.next/
-out/
 dist/
 build/
 coverage/
+
+# ----------------------------
+# Vite specific
+# ----------------------------
+.vite/
+vite.config.ts.timestamp-*
+vite.config.js.timestamp-*
 
 # ----------------------------
 # Cache / tooling
 # ----------------------------
 .eslintcache
 .cache/
-.vite/
 
 # ----------------------------
 # OS files
@@ -50,12 +52,17 @@ Thumbs.db
 *.swp
 
 # ----------------------------
-# Prisma / DB (if used)
-# ----------------------------
-prisma/migrations/
-
-# ----------------------------
 # Temporary files
 # ----------------------------
 *.tmp
 *.log
+
+# ----------------------------
+# TypeScript (if using)
+# ----------------------------
+*.tsbuildinfo
+
+# ----------------------------
+# Optional: local DB / Prisma
+# ----------------------------
+prisma/migrations/
