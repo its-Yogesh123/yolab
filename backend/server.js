@@ -1,15 +1,16 @@
+import dotenv from "dotenv";
+dotenv.config();
 import express from "express";
 import mongoose from "mongoose";
-import dotenv from "dotenv";
 import userRoutes from "./modules/users/user.route.js";
 import authRoutes from "./modules/auth/auth.routes.js";
 import srv001Routes from "./modules/short-url/srv001.routes.js"
 import {isLoggedIn} from "./modules/auth/middlewares/authenticate.js"
 import {isAuthorize} from "./modules/auth/middlewares/authorize.js"
+import "./modules/auth/auth.passport.js";
 const app = express();
 
 /** Environment Variables */
-dotenv.config();
 const PORT = process.env.PORT;
 const MONGO_URI = process.env.MONGO_URI;
 /** Database Connection */
