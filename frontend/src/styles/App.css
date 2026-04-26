@@ -1,0 +1,60 @@
+.app-shell {
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+}
+
+.app-page {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: var(--code-bg);
+  padding: 20px;
+}
+
+.app-card {
+  width: 100%;
+  max-width: 420px;
+  background: var(--bg);
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  padding: 32px;
+  box-shadow: var(--shadow);
+  text-align: center;
+}
+
+.app-title {
+  margin: 0;
+  font-size: 1.75rem;
+  color: var(--text-h);
+}
+
+.app-subtitle {
+  margin-top: 12px;
+  margin-bottom: 24px;
+  color: var(--text);
+}
+
+.app-google-btn {
+  width: 100%;
+  border: 1px solid var(--border);
+  background: var(--bg);
+  color: var(--text-h);
+  border-radius: 10px;
+  padding: 12px 16px;
+  font-size: 1rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background-color 0.2s ease;
+}
+
+.app-google-btn:hover {
+  background-color: var(--accent-bg);
+}
+
+@media (max-width: 480px) {
+  .app-card {
+    padding: 24px 18px;
+  }
+}

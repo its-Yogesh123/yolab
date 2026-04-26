@@ -1,0 +1,163 @@
+.register-shell {
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+}
+
+.register-page {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 24px;
+}
+
+.register-layout {
+  width: 100%;
+  max-width: 900px;
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 20px;
+}
+
+.register-card {
+  background: var(--bg);
+  border: 1px solid var(--border);
+  border-radius: 16px;
+  padding: 24px;
+  box-shadow: var(--shadow);
+}
+
+.register-title {
+  margin: 0;
+  font-size: 1.8rem;
+  color: var(--text-h);
+}
+
+.register-subtitle {
+  margin-top: 8px;
+  color: var(--text);
+  margin-bottom: 18px;
+}
+
+.register-form {
+  display: grid;
+  gap: 12px;
+}
+
+.register-label {
+  display: grid;
+  gap: 6px;
+  color: var(--text);
+  font-size: 0.9rem;
+}
+
+.register-input {
+  border-radius: 10px;
+  border: 1px solid var(--border);
+  background: var(--bg);
+  color: var(--text-h);
+  padding: 10px 12px;
+  font-size: 0.95rem;
+  width: 100%;
+}
+
+.register-primary-btn,
+.register-secondary-btn {
+  border: none;
+  border-radius: 10px;
+  padding: 11px;
+  color: var(--bg);
+  font-weight: 600;
+  cursor: pointer;
+  transition: opacity 0.2s ease;
+}
+
+.register-primary-btn {
+  margin-top: 6px;
+  background: var(--accent);
+}
+
+.register-secondary-btn {
+  background: color-mix(in srgb, var(--accent) 70%, black);
+}
+
+.register-primary-btn:hover,
+.register-secondary-btn:hover {
+  opacity: 0.92;
+}
+
+.register-divider {
+  margin-top: 4px;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.register-divider-line {
+  flex: 1;
+  height: 1px;
+  background: var(--border);
+}
+
+.register-divider-text {
+  font-size: 0.85rem;
+  color: var(--text);
+  white-space: nowrap;
+}
+
+.register-google-btn {
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  padding: 11px;
+  background: var(--bg);
+  color: var(--text-h);
+  font-weight: 600;
+  cursor: pointer;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 8px;
+  transition: background-color 0.2s ease;
+}
+
+.register-google-btn:hover {
+  background-color: var(--accent-bg);
+}
+
+.register-signin-btn {
+  border: 1px solid var(--accent-border);
+  border-radius: 10px;
+  padding: 11px;
+  color: var(--accent);
+  background: var(--accent-bg);
+  font-weight: 600;
+  text-decoration: none;
+  text-align: center;
+  transition: background-color 0.2s ease;
+}
+
+.register-signin-btn:hover {
+  background-color: color-mix(in srgb, var(--accent-bg) 80%, var(--bg));
+}
+
+@media (max-width: 860px) {
+  .register-layout {
+    grid-template-columns: 1fr;
+    max-width: 480px;
+  }
+}
+
+@media (max-width: 480px) {
+  .register-page {
+    padding: 16px;
+  }
+
+  .register-card {
+    padding: 20px 14px;
+  }
+
+  .register-title {
+    font-size: 1.5rem;
+  }
+}

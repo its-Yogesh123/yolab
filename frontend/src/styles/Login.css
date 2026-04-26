@@ -1,0 +1,153 @@
+.login-shell {
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+}
+
+.login-page {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 20px;
+}
+
+.login-card {
+  width: 100%;
+  max-width: 430px;
+  background: var(--bg);
+  border: 1px solid var(--border);
+  border-radius: 16px;
+  padding: 28px;
+  box-shadow: var(--shadow);
+}
+
+.login-title {
+  margin: 0;
+  color: var(--text-h);
+  font-size: 1.9rem;
+}
+
+.login-subtitle {
+  margin-top: 8px;
+  color: var(--text);
+  margin-bottom: 22px;
+}
+
+.login-form {
+  display: grid;
+  gap: 12px;
+}
+
+.login-label {
+  display: grid;
+  gap: 6px;
+  color: var(--text);
+  font-size: 0.9rem;
+}
+
+.input-icon-wrap {
+  position: relative;
+}
+
+.input-icon {
+  position: absolute;
+  left: 10px;
+  top: 10px;
+  color: var(--text);
+}
+
+.login-input {
+  width: 100%;
+  border-radius: 10px;
+  border: 1px solid var(--border);
+  background: var(--bg);
+  color: var(--text-h);
+  padding: 10px 12px;
+  font-size: 0.95rem;
+}
+
+.input-with-icon {
+  padding-left: 28px;
+}
+
+.login-primary-btn {
+  margin-top: 8px;
+  border: none;
+  border-radius: 10px;
+  padding: 11px;
+  background: var(--accent);
+  color: var(--bg);
+  font-weight: 600;
+  cursor: pointer;
+  transition: background-color 0.2s ease;
+}
+
+.login-primary-btn:hover {
+  background: color-mix(in srgb, var(--accent) 82%, black);
+}
+
+.login-divider {
+  margin: 18px 0;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.divider-line {
+  height: 1px;
+  flex: 1;
+  background: var(--border);
+}
+
+.divider-text {
+  color: var(--text);
+  font-size: 0.85rem;
+}
+
+.login-google-btn {
+  width: 100%;
+  border-radius: 10px;
+  border: 1px solid var(--border);
+  padding: 11px;
+  background: var(--bg);
+  color: var(--text-h);
+  font-weight: 600;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  transition: background-color 0.2s ease;
+}
+
+.login-google-btn:hover {
+  background-color: var(--accent-bg);
+}
+
+.login-footer-text {
+  margin-top: 18px;
+  margin-bottom: 0;
+  text-align: center;
+  color: var(--text);
+}
+
+.login-register-link {
+  color: var(--accent);
+  text-decoration: none;
+  font-weight: 600;
+}
+
+.login-register-link:hover {
+  text-decoration: underline;
+}
+
+@media (max-width: 480px) {
+  .login-card {
+    padding: 22px 16px;
+  }
+
+  .login-title {
+    font-size: 1.6rem;
+  }
+}
