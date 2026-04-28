@@ -24,22 +24,27 @@ const Footer = () => {
             <ul className="space-y-2">
               <li>
                 <a href="/" className="hover:text-white transition-colors duration-200">
-                  Home
+                About Us
                 </a>
               </li>
               <li>
                 <a href="/about" className="hover:text-white transition-colors duration-200">
-                  About
+
                 </a>
               </li>
               <li>
                 <a href="/projects" className="hover:text-white transition-colors duration-200">
-                  Projects
+                  Products
                 </a>
               </li>
               <li>
                 <a href="/blog" className="hover:text-white transition-colors duration-200">
-                  Blog
+                  Privacy Policy
+                </a>
+              </li>
+              <li>
+                <a href="/blog" className="hover:text-white transition-colors duration-200">
+                  Refund Policy
                 </a>
               </li>
             </ul>
@@ -47,8 +52,13 @@ const Footer = () => {
 
           {/* Services */}
           <div>
-            <h3 className="text-lg font-semibold text-gray-100  mb-4">Services</h3>
+            <h3 className="text-lg font-semibold text-gray-100  mb-4">Product & Services</h3>
             <ul className="space-y-2">
+            <li>
+                <a href="#" className="hover:text-white transition-colors duration-200">
+                  <span className='animate-pulse'>croW</span>
+                </a>
+              </li>
               <li>
                 <a href="#" className="hover:text-white transition-colors duration-200">
                   URL Shortner

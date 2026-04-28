@@ -1,6 +1,7 @@
 import { useState } from "react";
 import "../styles/Register.css";
 import Footer from "../shared/Footer.jsx";
+import Navbar from "../shared/Navigation.jsx";
 
 const Register = () => {
   const [registerData, setRegisterData] = useState({
@@ -41,6 +42,7 @@ const Register = () => {
 
   return (
     <div className="register-shell">
+      <Navbar />
       <div className="register-page">
         <div className="register-layout">
           <section className="register-card">

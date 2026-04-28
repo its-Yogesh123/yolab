@@ -1,7 +1,7 @@
 import { useState } from "react";
 import "../styles/Login.css";
 import Footer from "../shared/Footer.jsx";
-import NavigationMenu from "../shared/Navigation.jsx";
+import  Navbar from "../shared/Navigation.jsx";
 
 const Login = () => {
   const [formData, setFormData] = useState({
@@ -29,7 +29,7 @@ const Login = () => {
 
   return (
     <div className="login-shell">
-      <NavigationMenu />
+      <Navbar />
       <div className="login-page">
         <div className="login-card">
           <h1 className="login-title">Login</h1>
