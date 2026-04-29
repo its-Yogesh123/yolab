@@ -2,8 +2,10 @@ import { useState } from "react";
 import "../styles/Login.css";
 import Footer from "../shared/Footer.jsx";
 import  Navbar from "../shared/Navigation.jsx";
+import { useSession } from "@/context/sessions";
 
 const Login = () => {
+  const {session,setSession,loading} = useSession();
   const [formData, setFormData] = useState({
     email: "",
     password: "",
@@ -16,17 +18,24 @@ const Login = () => {
       [name]: value,
     }));
   };
-
-  const handleEmailPasswordLogin = (event) => {
-    event.preventDefault();
-    // Replace with your API call for local login.
-    console.log("Login with email/password:", formData);
+  const handleEmailPasswordLogin = async () => {
+    const res = await fetch("http://localhost:8000/auth/login", {
+      method: "POST",
+      credentials: "include", // cookie will be set
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(formData),
+    });
+    const data = await res.json();
+    setSession(data.user);
+    console.log(session)
   };
 
   const handleGoogleLogin = () => {
     window.location.href = "http://localhost:8000/auth/google";
-  };
 
+  };
+  console.log("loadong",loading);
+  if(loading) return (<h1>Loading...</h1>);
   return (
     <div className="login-shell">
       <Navbar />

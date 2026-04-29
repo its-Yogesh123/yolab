@@ -7,8 +7,10 @@ import Login from './app/Login.jsx'
 import Register from './app/Register.jsx'
 import About from './app/pages/About.jsx'
 import PrivacyPolicy from "./app/pages/Privacy";
+import { SessionProvider } from "./context/sessions";
 createRoot(document.getElementById('root')).render(
   <StrictMode>
+    <SessionProvider>
     <BrowserRouter>
       <Routes>
         <Route path="/" element={<App />} />
@@ -18,5 +20,6 @@ createRoot(document.getElementById('root')).render(
         <Route path="privacy-policy" element={<PrivacyPolicy />} />
       </Routes>
     </BrowserRouter>
+    </SessionProvider>
   </StrictMode>,
 )
