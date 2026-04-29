@@ -6,6 +6,7 @@ import App from './app/App.jsx'
 import Login from './app/Login.jsx'
 import Register from './app/Register.jsx'
 import About from './app/pages/About.jsx'
+import PrivacyPolicy from "./app/pages/Privacy";
 createRoot(document.getElementById('root')).render(
   <StrictMode>
     <BrowserRouter>
@@ -14,6 +15,7 @@ createRoot(document.getElementById('root')).render(
         <Route path="/about" element={<About />} />
         <Route path="auth/login" element={<Login />} />
         <Route path="auth/register" element={<Register />} />
+        <Route path="privacy-policy" element={<PrivacyPolicy />} />
       </Routes>
     </BrowserRouter>
   </StrictMode>,
