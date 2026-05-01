@@ -1,6 +1,6 @@
 import express from "express"
 import passport from "passport";
-import {loginWithEmailPassword,registerWithEmailPassword} from "./auth.controller.js"
+import {loginWithEmailPassword,manageSession,registerWithEmailPassword} from "./auth.controller.js"
 import { generateToken } from "./auth.services.js";
 const authRouter  = express.Router();
 
@@ -38,6 +38,7 @@ export const googleCallback = [
 
 
 
+authRouter.post('/session',manageSession);
 authRouter.post('/login',loginWithEmailPassword);
 authRouter.post('/register',registerWithEmailPassword);
 // authRouter.post('/logout',);

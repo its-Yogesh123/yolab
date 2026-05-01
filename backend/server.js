@@ -8,6 +8,8 @@ import srv001Routes from "./modules/short-url/srv001.routes.js"
 import {isLoggedIn} from "./modules/auth/middlewares/authenticate.js"
 import {isAuthorize} from "./modules/auth/middlewares/authorize.js"
 import "./modules/auth/auth.passport.js";
+import cookieParser from "cookie-parser";
+import cors from "cors";
 const app = express();
 
 /** Environment Variables */
@@ -22,6 +24,14 @@ mongoose.connect(MONGO_URI).then(()=>{console.log("Connected to MongoDB")})
 /************************** Middleware  Start ******************/
 // app.use(express.json());        // then use raw data in postman
 app.use(express.urlencoded({ extended: false }));
+app.use(express.json()); 
+app.use(cookieParser());
+app.use(
+    cors({
+      origin: "http://localhost:5173",
+      credentials: true,
+    })
+  );
 /************************** Middleware  End ******************/
 /************************** Routes  Start ******************/
 app.use("/api/users", userRoutes);

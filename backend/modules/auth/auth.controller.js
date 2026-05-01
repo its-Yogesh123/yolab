@@ -1,10 +1,11 @@
 import bcrypt from "bcrypt";
 import jwt from "jsonwebtoken";
 import User from "../users/user.model.js";
-import { generateToken } from "./auth.services.js";
+import { generateToken, validateToken } from "./auth.services.js";
 
 // Local database authentication with JWT
 export const loginWithEmailPassword = async (req, res) => {
+  console.log("req Received : ",req.body);
   try {
     const { email, password } = req.body;
     if (!email || !password) {
@@ -31,15 +32,21 @@ export const loginWithEmailPassword = async (req, res) => {
     };
 
     const token  = generateToken(payload);
+    res.cookie("token", token, {
+      httpOnly: true,  
+      secure: true,       
+      sameSite: "none", 
+      maxAge: 1* 24 * 60 * 60 * 1000,
+    });
     return res.status(200).json({
       message: "Login successful",
-      token,
       user: {
         name: user.name,
         email: user.email,
         role: user.role,
       },
     });
+
   } catch (error) {
     return res.status(500).json({ message: error.message });
   }
@@ -73,5 +80,30 @@ export const registerWithEmailPassword = async (req, res) => {
   }
 }
 
+//  
+
+
+export const manageSession = (req,res)=>{
+  try{
+    const token = req.cookies?.token;
+    if(!token){
+      return res.status(404).json({
+        message:"Not Authenticated 1",
+        user : null
+      });
+    }
+    const user = validateToken(token);
+    return res.status(200).json({
+      message:"Success",
+      user : user
+    });
+  }
+  catch(err){
+    return res.status(404).json({
+      message:"Not Authenticated 2",
+      user : null
+    });
+  }
+}
 
 
