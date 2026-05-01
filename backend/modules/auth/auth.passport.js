@@ -18,8 +18,9 @@ passport.use(
           id: profile.id,
           email: profile.emails[0].value,
           name: profile.displayName,
+          img: profile.photos[0].value,
         };
-        console.log("After Google Authentication : ",user);
+        console.log("After Google Authentication : ",profile);
         // 🔥 Replace this with DB logic:
         // find user OR create user
 

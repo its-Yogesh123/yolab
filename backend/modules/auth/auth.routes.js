@@ -1,14 +1,10 @@
 import express from "express"
 import passport from "passport";
-import {loginWithEmailPassword,manageSession,registerWithEmailPassword} from "./auth.controller.js"
+import {loginWithEmailPassword,manageSession,registerWithEmailPassword,logout} from "./auth.controller.js"
 import { generateToken } from "./auth.services.js";
 const authRouter  = express.Router();
 
-// routes/authRoutes.js
 
-
-
-// STEP 1 → Redirect user to Google
 export const googleAuth = passport.authenticate("google", {
   scope: ["profile", "email"],
 });
@@ -18,10 +14,12 @@ export const googleCallback = [
   passport.authenticate("google", { session: false }),
 
   (req, res) => {
+    console.log("Google callback req received", req.user);
     const payload = {
         id: req.user.id,
         email: req.user.email,
         role: "user",
+        img: req.user.img
     };
     const token = generateToken(payload);
     // Set cookie
@@ -32,16 +30,15 @@ export const googleCallback = [
     });
 
     // Redirect to frontend
-    res.redirect("");
+    res.redirect("http://localhost:5173");
   },
 ];
 
 
-
-authRouter.post('/session',manageSession);
+authRouter.post('/logout',logout);
+authRouter.get('/session',manageSession);
 authRouter.post('/login',loginWithEmailPassword);
 authRouter.post('/register',registerWithEmailPassword);
-// authRouter.post('/logout',);
 authRouter.get("/google", googleAuth);
 authRouter.get("/google/callback", googleCallback);
 export default authRouter;

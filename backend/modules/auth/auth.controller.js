@@ -81,13 +81,23 @@ export const registerWithEmailPassword = async (req, res) => {
 }
 
 //  
-
+export const logout = (req,res)=>{
+  res.clearCookie("token", {
+    httpOnly: true,
+    secure: true,
+    sameSite: "none",
+  });
+  return res.status(200).json({
+    message:"Logout Success"
+  });
+}
 
 export const manageSession = (req,res)=>{
+  console.log("Session check req received",req.cookies);
   try{
     const token = req.cookies?.token;
     if(!token){
-      return res.status(404).json({
+      return res.status(405).json({
         message:"Not Authenticated 1",
         user : null
       });
@@ -99,7 +109,7 @@ export const manageSession = (req,res)=>{
     });
   }
   catch(err){
-    return res.status(404).json({
+    return res.status(405).json({
       message:"Not Authenticated 2",
       user : null
     });

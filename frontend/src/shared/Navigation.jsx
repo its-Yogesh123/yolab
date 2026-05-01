@@ -1,3 +1,4 @@
+import { useSession } from '@/context/sessions';
 import React, { useState, useEffect } from 'react';
 import { 
   FiMenu, FiX, FiSun, FiMoon, FiGithub, FiUser, 
@@ -5,7 +6,7 @@ import {
 } from 'react-icons/fi';
 
 const navLinks = [
-  { name: 'Home', icon: FiHome, href: '#' },
+  { name: 'Home', icon: FiHome, href: '/' },
   { name: 'About', icon: FiInfo, href: '/about' },
   { name: 'Services', icon: FiBriefcase, href: '#' },
   { name: 'Contact', icon: FiMail, href: '#' },
@@ -15,7 +16,7 @@ export default function Navbar() {
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const [isProfileMenuOpen, setIsProfileMenuOpen] = useState(false);
   const [isDarkMode, setIsDarkMode] = useState(true);
-
+  const { session ,logout} = useSession();
   // Handle Dark Mode Theme Toggle
   useEffect(() => {
     if (isDarkMode) {
@@ -214,37 +215,55 @@ export default function Navbar() {
         <div className="p-4">
           <div className="flex items-center gap-4 mb-6 p-4 rounded-xl bg-gray-50 dark:bg-gray-800/50">
             <img 
-              src="https://api.dicebear.com/7.x/avataaars/svg?seed=Felix" 
+              src={session? session.img :"https://api.dicebear.com/7.x/avataaars/svg?seed=Felix"} 
               alt="User" 
               className="h-12 w-12 rounded-full bg-gray-200 dark:bg-gray-700"
             />
             <div>
-              <p className="font-semibold text-gray-900 dark:text-white">John Doe</p>
-              <p className="text-sm text-gray-500 dark:text-gray-400">john.doe@example.com</p>
+              <p className="font-semibold text-gray-900 dark:text-white">
+                {session ? session.name : 'Sign in'}
+              </p>
+              <p className="text-sm text-gray-500 dark:text-gray-400">
+                {session ? session.email : 'Sign in to access your account'}
+              </p>
             </div>
           </div>
 
-          <ul className="space-y-1">
-            <li>
-              <button className="w-full flex items-center gap-3 rounded-lg px-4 py-3 text-left text-gray-700 hover:bg-gray-100 dark:text-gray-300 dark:hover:bg-gray-800 transition-colors">
-                <FiUser className="h-5 w-5 text-gray-400" />
-                <span className="font-medium">Your Profile</span>
-              </button>
-            </li>
-            <li>
-              <button className="w-full flex items-center gap-3 rounded-lg px-4 py-3 text-left text-gray-700 hover:bg-gray-100 dark:text-gray-300 dark:hover:bg-gray-800 transition-colors">
-                <FiSettings className="h-5 w-5 text-gray-400" />
-                <span className="font-medium">Settings</span>
-              </button>
-            </li>
-          </ul>
+          {session ? (
+            <>
+              <ul className="space-y-1">
+                <li>
+                  <button className="w-full flex items-center gap-3 rounded-lg px-4 py-3 text-left text-gray-700 hover:bg-gray-100 dark:text-gray-300 dark:hover:bg-gray-800 transition-colors">
+                    <FiUser className="h-5 w-5 text-gray-400" />
+                    <span className="font-medium">Your Profile</span>
+                  </button>
+                </li>
+                <li>
+                  <button className="w-full flex items-center gap-3 rounded-lg px-4 py-3 text-left text-gray-700 hover:bg-gray-100 dark:text-gray-300 dark:hover:bg-gray-800 transition-colors">
+                    <FiSettings className="h-5 w-5 text-gray-400" />
+                    <span className="font-medium">Settings</span>
+                  </button>
+                </li>
+              </ul>
 
-          <div className="mt-6 border-t border-gray-200 pt-6 dark:border-gray-800">
-            <button className="w-full flex items-center gap-3 rounded-lg px-4 py-3 text-left text-red-600 hover:bg-red-50 dark:text-red-400 dark:hover:bg-red-900/20 transition-colors font-medium">
-              <FiLogOut className="h-5 w-5" />
-              Sign out
-            </button>
-          </div>
+              <div className="mt-6 border-t border-gray-200 pt-6 dark:border-gray-800">
+                <button onClick = {logout} className="w-full flex items-center gap-3 rounded-lg px-4 py-3 text-left text-red-600 hover:bg-red-50 dark:text-red-400 dark:hover:bg-red-900/20 transition-colors font-medium">
+                  <FiLogOut className="h-5 w-5" />
+                  Sign out
+                </button>
+              </div>
+            </>
+          ) : (
+            <div className="mt-6 border-t border-gray-200 pt-6 dark:border-gray-800">
+              <a
+                href="/auth/login"
+                className="w-full flex items-center gap-3 rounded-lg px-4 py-3 text-left text-blue-600 hover:bg-blue-50 dark:text-blue-400 dark:hover:bg-blue-900/20 transition-colors font-medium"
+              >
+                <FiUser className="h-5 w-5" />
+                Sign in
+              </a>
+            </div>
+          )}
         </div>
       </div>
     </>
