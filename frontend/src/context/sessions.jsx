@@ -8,12 +8,13 @@ export const SessionProvider = ({ children }) => {
   useEffect(() => {
     const checkSession = async () => {
       try {
-        const res = await fetch("/api/me", {
+        const res = await fetch("/auth/session", {
           credentials: "include", // send cookies
         });
 
         const data = await res.json();
-        setSession(data.user);
+        console.log("data",data);
+        setSession(data.user);  
       } catch (err) {
         setSession(null);
       } finally {

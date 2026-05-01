@@ -10,7 +10,7 @@ const Login = () => {
     email: "",
     password: "",
   });
-
+  const [processing,setProcessing] = useState(false);
   const handleChange = (event) => {
     const { name, value } = event.target;
     setFormData((prev) => ({
@@ -18,23 +18,36 @@ const Login = () => {
       [name]: value,
     }));
   };
-  const handleEmailPasswordLogin = async () => {
+  const handleEmailPasswordLogin = async (e) => {
+    e.preventDefault();
+    setProcessing(true);
     const res = await fetch("http://localhost:8000/auth/login", {
       method: "POST",
       credentials: "include", // cookie will be set
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify(formData),
     });
-    const data = await res.json();
-    setSession(data.user);
-    console.log(session)
+    const status = res.status;
+    setProcessing(false);
+    if(status === 200){
+      const data = await res.json();
+      setSession(data.user);
+      console.log(data);
+      console.log(session);
+    }
+    else{
+      alert("Login failed");
+    }
   };
 
   const handleGoogleLogin = () => {
+    if (session) {
+      alert("You are already logged in.");
+      return;
+    }
     window.location.href = "http://localhost:8000/auth/google";
 
   };
-  console.log("loadong",loading);
   if(loading) return (<h1>Loading...</h1>);
   return (
     <div className="login-shell">
@@ -77,7 +90,7 @@ const Login = () => {
               </div>
             </label>
 
-            <button type="submit" className="login-primary-btn">
+            <button type="submit" className="login-primary-btn" disabled={processing}>
               Login with Email / Password
             </button>
           </form>
@@ -88,7 +101,12 @@ const Login = () => {
             <span className="divider-line" />
           </div>
 
-          <button type="button" onClick={handleGoogleLogin} className="login-google-btn">
+          <button
+            type="button"
+            onClick={handleGoogleLogin}
+            className="login-google-btn"
+            disabled={processing}
+          >
             <svg width="18" height="18" viewBox="0 0 24 24" aria-hidden="true">
               <path
                 fill="#EA4335"

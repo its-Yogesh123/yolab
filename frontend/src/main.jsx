@@ -8,11 +8,13 @@ import Register from './app/Register.jsx'
 import About from './app/pages/About.jsx'
 import PrivacyPolicy from "./app/pages/Privacy";
 import { SessionProvider } from "./context/sessions";
+import Testing from "./app/pages/testing";
 createRoot(document.getElementById('root')).render(
   <StrictMode>
     <SessionProvider>
     <BrowserRouter>
       <Routes>
+        <Route path="/testing" element={<Testing />} />
         <Route path="/" element={<App />} />
         <Route path="/about" element={<About />} />
         <Route path="auth/login" element={<Login />} />
