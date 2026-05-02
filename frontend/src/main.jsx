@@ -9,6 +9,7 @@ import About from './app/pages/About.jsx'
 import PrivacyPolicy from "./app/pages/Privacy";
 import { SessionProvider } from "./context/sessions";
 import Testing from "./app/pages/testing";
+import TemplateMarketplace from "./prompts-lib/page";
 createRoot(document.getElementById('root')).render(
   <StrictMode>
     <SessionProvider>
@@ -20,6 +21,9 @@ createRoot(document.getElementById('root')).render(
         <Route path="auth/login" element={<Login />} />
         <Route path="auth/register" element={<Register />} />
         <Route path="privacy-policy" element={<PrivacyPolicy />} />
+
+        {/* Prompt  */}
+         <Route path="prompts-ai-marketplace" element={<TemplateMarketplace />} />
       </Routes>
     </BrowserRouter>
     </SessionProvider>
