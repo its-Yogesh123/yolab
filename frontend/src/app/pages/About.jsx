@@ -43,11 +43,11 @@ const testimonials = [
 ];
 
 const testimonialCardStyles = [
-  "bg-gradient-to-br from-blue-500/15 via-cyan-500/10 to-transparent border-blue-500/30",
-  "bg-gradient-to-br from-violet-500/15 via-fuchsia-500/10 to-transparent border-violet-500/30",
-  "bg-gradient-to-br from-emerald-500/15 via-lime-500/10 to-transparent border-emerald-500/30",
-  "bg-gradient-to-br from-rose-500/15 via-orange-500/10 to-transparent border-rose-500/30",
-  "bg-gradient-to-br from-sky-500/15 via-indigo-500/10 to-transparent border-sky-500/30",
+  "bg-card border-border",
+  "bg-card border-border",
+  "bg-card border-border",
+  "bg-card border-border",
+  "bg-card border-border",
 ];
 
 export default function AboutPage() {
@@ -164,10 +164,6 @@ export default function AboutPage() {
           
           {/* Marquee Container */}
           <div className="relative flex w-full overflow-hidden bg-background">
-            {/* Fade gradients on edges */}
-            <div className="pointer-events-none absolute left-0 top-0 z-10 h-full w-1/6 bg-gradient-to-r from-background to-transparent"></div>
-            <div className="pointer-events-none absolute right-0 top-0 z-10 h-full w-1/6 bg-gradient-to-l from-background to-transparent"></div>
-            
             <div className="flex animate-marquee gap-6 whitespace-nowrap hover:[animation-play-state:paused]">
               {/* Render array twice to create seamless loop effect */}
               {[...testimonials, ...testimonials].map((review, i) => (

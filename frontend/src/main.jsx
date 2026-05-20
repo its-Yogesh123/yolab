@@ -10,6 +10,7 @@ import PrivacyPolicy from "./app/pages/Privacy";
 import { SessionProvider } from "./context/sessions";
 import Testing from "./app/pages/testing";
 import TemplateMarketplace from "./prompts-lib/page";
+import ShortUrlService from "./short-url/page";
 createRoot(document.getElementById('root')).render(
   <StrictMode>
     <SessionProvider>
@@ -24,6 +25,7 @@ createRoot(document.getElementById('root')).render(
 
         {/* Prompt  */}
          <Route path="prompts-ai-marketplace" element={<TemplateMarketplace />} />
+         <Route path="short-url" element={<ShortUrlService />} />
       </Routes>
     </BrowserRouter>
     </SessionProvider>

@@ -90,24 +90,24 @@ export default function TemplateMarketplace() {
   };
 
   return (
-    <div className="min-h-screen bg-neutral-50 text-neutral-900 font-sans selection:bg-neutral-200">
+    <div className="min-h-screen bg-[#050505] text-[#f5f5f5] font-sans selection:bg-neutral-700">
       
       {/* NAVBAR */}
-      <header className="sticky top-0 z-40 bg-white/80 backdrop-blur-md border-b border-neutral-200">
+      <header className="sticky top-0 z-40 bg-[#050505]/90 backdrop-blur-md border-b border-neutral-800">
         <div className="container mx-auto px-4 h-16 flex items-center justify-between">
           <div className="flex items-center gap-2 text-xl font-bold tracking-tight">
-            <Sparkles className="w-6 h-6 text-indigo-600" />
-            <span>Prompt<span className="text-neutral-500 font-normal">Base</span></span>
+            <Sparkles className="w-6 h-6 text-neutral-300" />
+            <span>Prompt<span className="text-neutral-400 font-normal">Base</span></span>
           </div>
           
           <div className="hidden md:flex flex-1 max-w-md mx-8 relative">
-            <Search className="w-4 h-4 absolute left-3 top-1/2 -translate-y-1/2 text-neutral-400" />
+            <Search className="w-4 h-4 absolute left-3 top-1/2 -translate-y-1/2 text-neutral-500" />
             <input 
               type="text" 
               placeholder="Search templates..." 
               value={search}
               onChange={(e) => setSearch(e.target.value)}
-              className="w-full pl-9 pr-4 py-2 bg-neutral-100 border-transparent focus:bg-white focus:border-indigo-500 focus:ring-2 focus:ring-indigo-200 rounded-lg text-sm transition-all outline-none"
+              className="w-full pl-9 pr-4 py-2 bg-[#111111] border border-neutral-800 focus:bg-[#171717] focus:border-neutral-500 focus:ring-2 focus:ring-neutral-700 rounded-md text-sm text-neutral-100 placeholder:text-neutral-500 transition-all outline-none"
             />
           </div>
 
@@ -115,7 +115,7 @@ export default function TemplateMarketplace() {
             <select 
               value={sortBy} 
               onChange={(e) => setSortBy(e.target.value)}
-              className="text-sm bg-transparent border border-neutral-200 rounded-md px-3 py-1.5 focus:outline-none focus:ring-2 focus:ring-indigo-200"
+              className="text-sm bg-[#111111] border border-neutral-800 rounded-md px-3 py-1.5 focus:outline-none focus:ring-2 focus:ring-neutral-700"
             >
               <option>Popular</option>
               <option>Latest</option>
@@ -130,7 +130,7 @@ export default function TemplateMarketplace() {
         {/* SIDEBAR */}
         <aside className="w-full md:w-64 flex-shrink-0 space-y-8">
           <div>
-            <h3 className="text-sm font-semibold text-neutral-900 mb-3 flex items-center gap-2">
+            <h3 className="text-sm font-semibold text-neutral-100 mb-3 flex items-center gap-2">
               <SlidersHorizontal className="w-4 h-4" /> Categories
             </h3>
             <ul className="space-y-1 text-sm">
@@ -139,7 +139,7 @@ export default function TemplateMarketplace() {
                   <button 
                     onClick={() => setCategory(cat)}
                     className={`w-full text-left px-3 py-2 rounded-md transition-colors ${
-                      category === cat ? 'bg-neutral-200 font-medium' : 'hover:bg-neutral-100 text-neutral-600'
+                      category === cat ? 'bg-neutral-800 text-white font-medium' : 'hover:bg-neutral-900 text-neutral-400'
                     }`}
                   >
                     {cat}
@@ -150,12 +150,12 @@ export default function TemplateMarketplace() {
           </div>
 
           <div>
-            <h3 className="text-sm font-semibold text-neutral-900 mb-3">Compatible With</h3>
+            <h3 className="text-sm font-semibold text-neutral-100 mb-3">Compatible With</h3>
             <div className="space-y-2">
               {LLMS.map(llm => (
-                <label key={llm} className="flex items-center gap-2 text-sm text-neutral-600 cursor-pointer group">
+                <label key={llm} className="flex items-center gap-2 text-sm text-neutral-400 cursor-pointer group">
                   <div className={`w-4 h-4 rounded border flex items-center justify-center transition-colors ${
-                    selectedLLMs.includes(llm) ? 'bg-indigo-600 border-indigo-600 text-white' : 'border-neutral-300 group-hover:border-indigo-400'
+                    selectedLLMs.includes(llm) ? 'bg-neutral-200 border-neutral-200 text-neutral-950' : 'border-neutral-700 group-hover:border-neutral-400'
                   }`}>
                     {selectedLLMs.includes(llm) && <Check className="w-3 h-3" />}
                   </div>
@@ -188,38 +188,38 @@ export default function TemplateMarketplace() {
                     animate={{ opacity: 1, scale: 1 }}
                     exit={{ opacity: 0, scale: 0.95 }}
                     key={template.id}
-                    className="group bg-white rounded-2xl border border-neutral-200 overflow-hidden hover:shadow-xl hover:-translate-y-1 transition-all duration-300 flex flex-col cursor-pointer"
+                    className="group bg-[#111111] rounded-md border border-neutral-800 overflow-hidden hover:border-neutral-500 hover:-translate-y-1 transition-all duration-300 flex flex-col cursor-pointer"
                     onClick={() => setSelectedTemplate(template)}
                   >
                     {/* Placeholder Image */}
-                    <div className="h-40 bg-gradient-to-br from-indigo-50 to-purple-50 flex items-center justify-center border-b border-neutral-100">
-                      {template.category === 'Coding' ? <Code className="w-10 h-10 text-indigo-200" /> :
-                       template.category === 'AI Art' ? <ImageIcon className="w-10 h-10 text-purple-200" /> :
-                       <MessageSquare className="w-10 h-10 text-blue-200" />}
+                    <div className="h-40 bg-neutral-950 flex items-center justify-center border-b border-neutral-800">
+                      {template.category === 'Coding' ? <Code className="w-10 h-10 text-neutral-500" /> :
+                       template.category === 'AI Art' ? <ImageIcon className="w-10 h-10 text-neutral-500" /> :
+                       <MessageSquare className="w-10 h-10 text-neutral-500" />}
                     </div>
                     
                     <div className="p-5 flex-1 flex flex-col">
                       <div className="flex gap-2 mb-3 flex-wrap">
                         {template.tags.map(tag => (
-                          <span key={tag} className="text-[10px] uppercase tracking-wider font-semibold px-2 py-1 bg-neutral-100 text-neutral-600 rounded-full">
+                          <span key={tag} className="text-[10px] uppercase tracking-wider font-semibold px-2 py-1 bg-neutral-900 text-neutral-300 rounded-full">
                             {tag}
                           </span>
                         ))}
                       </div>
                       
-                      <h3 className="text-lg font-bold text-neutral-900 mb-1 leading-tight">{template.title}</h3>
-                      <p className="text-sm text-neutral-500 line-clamp-2 mb-4 flex-1">{template.description}</p>
+                      <h3 className="text-lg font-bold text-neutral-100 mb-1 leading-tight">{template.title}</h3>
+                      <p className="text-sm text-neutral-400 line-clamp-2 mb-4 flex-1">{template.description}</p>
                       
-                      <div className="flex items-center justify-between mt-auto pt-4 border-t border-neutral-100">
+                      <div className="flex items-center justify-between mt-auto pt-4 border-t border-neutral-800">
                         <div className="flex gap-1">
                           {template.llm.map(l => (
-                            <span key={l} className="text-xs px-2 py-1 bg-blue-50 text-blue-700 rounded-md font-medium border border-blue-100">
+                            <span key={l} className="text-xs px-2 py-1 bg-neutral-950 text-neutral-300 rounded-md font-medium border border-neutral-800">
                               {l}
                             </span>
                           ))}
                         </div>
                         <span className="text-xs text-neutral-400 flex items-center gap-1 font-medium">
-                          <Heart className="w-3 h-3 fill-neutral-300 text-neutral-300" />
+                          <Heart className="w-3 h-3 fill-neutral-600 text-neutral-600" />
                           {(template.uses / 1000).toFixed(1)}k
                         </span>
                       </div>
@@ -240,7 +240,7 @@ export default function TemplateMarketplace() {
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
               exit={{ opacity: 0 }}
-              className="absolute inset-0 bg-neutral-900/40 backdrop-blur-sm"
+              className="absolute inset-0 bg-black/70 backdrop-blur-sm"
               onClick={() => setSelectedTemplate(null)}
             />
             
@@ -248,51 +248,51 @@ export default function TemplateMarketplace() {
               initial={{ opacity: 0, y: 20, scale: 0.95 }}
               animate={{ opacity: 1, y: 0, scale: 1 }}
               exit={{ opacity: 0, y: 20, scale: 0.95 }}
-              className="relative bg-white rounded-2xl shadow-2xl w-full max-w-2xl overflow-hidden flex flex-col max-h-[90vh]"
+              className="relative bg-[#111111] rounded-md shadow-2xl w-full max-w-2xl overflow-hidden flex flex-col max-h-[90vh] border border-neutral-800"
             >
-              <div className="p-6 border-b border-neutral-100 flex justify-between items-start">
+              <div className="p-6 border-b border-neutral-800 flex justify-between items-start">
                 <div>
-                  <h2 className="text-2xl font-bold text-neutral-900 mb-2">{selectedTemplate.title}</h2>
-                  <p className="text-sm text-neutral-500">{selectedTemplate.description}</p>
+                  <h2 className="text-2xl font-bold text-neutral-100 mb-2">{selectedTemplate.title}</h2>
+                  <p className="text-sm text-neutral-400">{selectedTemplate.description}</p>
                 </div>
                 <button 
                   onClick={() => setSelectedTemplate(null)}
-                  className="p-2 text-neutral-400 hover:bg-neutral-100 rounded-full transition-colors"
+                  className="p-2 text-neutral-400 hover:bg-neutral-900 rounded-full transition-colors"
                 >
                   <X className="w-5 h-5" />
                 </button>
               </div>
 
-              <div className="p-6 overflow-y-auto flex-1 bg-neutral-50">
+              <div className="p-6 overflow-y-auto flex-1 bg-neutral-950">
                 <div className="mb-4 flex items-center justify-between">
-                  <h3 className="text-sm font-semibold text-neutral-900">Prompt Template</h3>
+                  <h3 className="text-sm font-semibold text-neutral-100">Prompt Template</h3>
                   <button 
                     onClick={() => handleCopy(selectedTemplate.prompt)}
-                    className="flex items-center gap-1 text-xs font-medium text-neutral-600 hover:text-indigo-600 bg-white border border-neutral-200 px-3 py-1.5 rounded-md shadow-sm transition-colors"
+                    className="flex items-center gap-1 text-xs font-medium text-neutral-300 hover:text-white bg-[#111111] border border-neutral-800 px-3 py-1.5 rounded-md shadow-sm transition-colors"
                   >
                     {copied ? <Check className="w-3 h-3 text-green-600" /> : <Copy className="w-3 h-3" />}
                     {copied ? 'Copied!' : 'Copy'}
                   </button>
                 </div>
                 
-                <div className="bg-white border border-neutral-200 p-4 rounded-xl text-sm text-neutral-700 whitespace-pre-wrap font-mono leading-relaxed shadow-sm">
+                <div className="bg-[#111111] border border-neutral-800 p-4 rounded-md text-sm text-neutral-300 whitespace-pre-wrap font-mono leading-relaxed shadow-sm">
                   {selectedTemplate.prompt.split(/(\[.*?\])/).map((part, i) => 
                     part.startsWith('[') && part.endsWith(']') 
-                      ? <span key={i} className="text-indigo-600 font-bold bg-indigo-50 px-1 rounded">{part}</span> 
+                      ? <span key={i} className="text-white font-bold bg-neutral-800 px-1 rounded">{part}</span> 
                       : part
                   )}
                 </div>
               </div>
 
-              <div className="p-6 border-t border-neutral-100 bg-white flex justify-between items-center">
+              <div className="p-6 border-t border-neutral-800 bg-[#111111] flex justify-between items-center">
                 <div className="flex gap-2">
                   {selectedTemplate.llm.map(l => (
-                    <span key={l} className="text-xs px-2 py-1 bg-neutral-100 text-neutral-700 rounded-md font-medium">
+                    <span key={l} className="text-xs px-2 py-1 bg-neutral-900 text-neutral-300 rounded-md font-medium">
                       {l}
                     </span>
                   ))}
                 </div>
-                <button className="flex items-center gap-2 bg-neutral-900 hover:bg-neutral-800 text-white px-5 py-2 rounded-lg text-sm font-medium transition-colors">
+                <button className="flex items-center gap-2 bg-neutral-200 hover:bg-white text-neutral-950 px-5 py-2 rounded-md text-sm font-medium transition-colors">
                   Open in App <ExternalLink className="w-4 h-4" />
                 </button>
               </div>

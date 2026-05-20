@@ -49,7 +49,7 @@ export default function Navbar() {
 
   return (
     <>
-      <nav className="sticky top-0 z-40 w-full border-b border-gray-200 bg-white/80 backdrop-blur-md transition-colors duration-300 dark:border-gray-800 dark:bg-gray-900/80">
+      <nav className="sticky top-0 z-40 w-full border-b border-neutral-800 bg-[#050505]/90 backdrop-blur-md transition-colors duration-300">
         <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
           <div className="flex h-16 items-center justify-between relative">
             
@@ -58,7 +58,7 @@ export default function Navbar() {
               <button
                 type="button"
                 onClick={() => setIsMobileMenuOpen(true)}
-                className="p-2 text-gray-600 hover:bg-gray-100 rounded-md dark:text-gray-300 dark:hover:bg-gray-800 transition-colors"
+                className="p-2 text-neutral-300 hover:bg-neutral-900 rounded-md transition-colors"
                 aria-controls="mobile-menu"
                 aria-expanded={isMobileMenuOpen}
                 aria-label="Open main menu"
@@ -69,7 +69,7 @@ export default function Navbar() {
 
             {/* Desktop: Left / Mobile: Center - Logo */}
             <div className="flex-shrink-0 md:flex-1 md:flex md:items-center absolute md:static left-1/2 -translate-x-1/2 md:translate-x-0">
-              <a href="#" className="flex items-center gap-2 text-xl font-bold text-gray-900 dark:text-white">
+              <a href="#" className="flex items-center gap-2 text-xl font-bold text-white">
                 {/* <div className="h-8 w-8 rounded-lg bg-blue-600 flex items-center justify-center text-white">
                   <span className="font-bold text-lg">L</span>
                 </div> */}
@@ -84,7 +84,7 @@ export default function Navbar() {
                   <li key={link.name}>
                     <a
                       href={link.href}
-                      className="text-gray-600 hover:text-blue-600 dark:text-gray-300 dark:hover:text-blue-400 font-medium transition-colors"
+                      className="text-neutral-300 hover:text-white font-medium transition-colors"
                     >
                       {link.name}
                     </a>
@@ -98,7 +98,7 @@ export default function Navbar() {
               {/* Theme Toggle (Hidden on mobile, moved to sidebar) */}
               <button
                 onClick={() => setIsDarkMode(!isDarkMode)}
-                className="hidden md:flex p-2 text-gray-600 hover:bg-gray-100 rounded-full dark:text-gray-300 dark:hover:bg-gray-800 transition-colors"
+                className="hidden md:flex p-2 text-neutral-300 hover:bg-neutral-900 rounded-full transition-colors"
                 aria-label="Toggle Dark Mode"
               >
                 {isDarkMode ? <FiSun className="h-5 w-5" /> : <FiMoon className="h-5 w-5" />}
@@ -109,7 +109,7 @@ export default function Navbar() {
                 href="https://github.com/its-Yogesh123/yolab"
                 target="_blank"
                 rel="noreferrer"
-                className="p-2 text-gray-600 hover:bg-gray-100 rounded-full dark:text-gray-300 dark:hover:bg-gray-800 transition-colors"
+                className="p-2 text-neutral-300 hover:bg-neutral-900 rounded-full transition-colors"
                 aria-label="GitHub Repository"
               >
                 <FiGithub className="h-5 w-5" />
@@ -118,7 +118,7 @@ export default function Navbar() {
               {/* Profile Avatar Button */}
               <button
                 onClick={() => setIsProfileMenuOpen(true)}
-                className="ml-2 h-8 w-8 rounded-full bg-gray-200 border-2 border-transparent hover:border-blue-600 focus:outline-none focus:ring-2 focus:ring-blue-600 focus:ring-offset-2 dark:bg-gray-700 transition-all overflow-hidden"
+                className="ml-2 h-8 w-8 rounded-full bg-neutral-800 border-2 border-transparent hover:border-neutral-400 focus:outline-none focus:ring-2 focus:ring-neutral-500 focus:ring-offset-2 focus:ring-offset-black transition-all overflow-hidden"
                 aria-expanded={isProfileMenuOpen}
                 aria-label="Open user menu"
               >
@@ -149,17 +149,17 @@ export default function Navbar() {
 
       {/* Mobile Menu Drawer (Left Side) */}
       <div 
-        className={`fixed top-0 left-0 z-50 h-full w-72 bg-white shadow-2xl transition-transform duration-300 ease-in-out dark:bg-gray-900 ${
+        className={`fixed top-0 left-0 z-50 h-full w-72 bg-[#0a0a0a] shadow-2xl transition-transform duration-300 ease-in-out ${
           isMobileMenuOpen ? 'translate-x-0' : '-translate-x-full'
         }`}
         role="dialog"
         aria-modal="true"
       >
-        <div className="flex items-center justify-between border-b border-gray-200 p-4 dark:border-gray-800">
-          <span className="text-lg font-bold text-gray-900 dark:text-white">Menu</span>
+        <div className="flex items-center justify-between border-b border-neutral-800 p-4">
+          <span className="text-lg font-bold text-white">Menu</span>
           <button 
             onClick={() => setIsMobileMenuOpen(false)}
-            className="rounded-md p-2 text-gray-500 hover:bg-gray-100 dark:text-gray-400 dark:hover:bg-gray-800"
+            className="rounded-md p-2 text-neutral-400 hover:bg-neutral-900"
             aria-label="Close menu"
           >
             <FiX className="h-5 w-5" />
@@ -171,9 +171,9 @@ export default function Navbar() {
               <li key={link.name}>
                 <a
                   href={link.href}
-                  className="flex items-center gap-3 rounded-lg px-4 py-3 text-gray-700 hover:bg-gray-100 dark:text-gray-300 dark:hover:bg-gray-800 font-medium transition-colors"
+                  className="flex items-center gap-3 rounded-md px-4 py-3 text-neutral-300 hover:bg-neutral-900 font-medium transition-colors"
                 >
-                  <link.icon className="h-5 w-5 text-gray-400" />
+                  <link.icon className="h-5 w-5 text-neutral-500" />
                   {link.name}
                 </a>
               </li>
@@ -181,12 +181,12 @@ export default function Navbar() {
           </ul>
           
           {/* Theme toggle for mobile */}
-          <div className="border-t border-gray-200 dark:border-gray-800 pt-4">
+          <div className="border-t border-neutral-800 pt-4">
             <button
               onClick={() => setIsDarkMode(!isDarkMode)}
-              className="flex w-full items-center gap-3 rounded-lg px-4 py-3 text-gray-700 hover:bg-gray-100 dark:text-gray-300 dark:hover:bg-gray-800 font-medium transition-colors"
+              className="flex w-full items-center gap-3 rounded-md px-4 py-3 text-neutral-300 hover:bg-neutral-900 font-medium transition-colors"
             >
-              {isDarkMode ? <FiSun className="h-5 w-5 text-gray-400" /> : <FiMoon className="h-5 w-5 text-gray-400" />}
+              {isDarkMode ? <FiSun className="h-5 w-5 text-neutral-500" /> : <FiMoon className="h-5 w-5 text-neutral-500" />}
               {isDarkMode ? 'Light Mode' : 'Dark Mode'}
             </button>
           </div>
@@ -195,17 +195,17 @@ export default function Navbar() {
 
       {/* Profile Drawer (Right Side) */}
       <div 
-        className={`fixed top-0 right-0 z-50 h-full w-80 bg-white shadow-2xl transition-transform duration-300 ease-in-out dark:bg-gray-900 ${
+        className={`fixed top-0 right-0 z-50 h-full w-80 bg-[#0a0a0a] shadow-2xl transition-transform duration-300 ease-in-out ${
           isProfileMenuOpen ? 'translate-x-0' : 'translate-x-full'
         }`}
         role="dialog"
         aria-modal="true"
       >
-        <div className="flex items-center justify-between border-b border-gray-200 p-4 dark:border-gray-800">
-          <span className="text-lg font-bold text-gray-900 dark:text-white">Account</span>
+        <div className="flex items-center justify-between border-b border-neutral-800 p-4">
+          <span className="text-lg font-bold text-white">Account</span>
           <button 
             onClick={() => setIsProfileMenuOpen(false)}
-            className="rounded-md p-2 text-gray-500 hover:bg-gray-100 dark:text-gray-400 dark:hover:bg-gray-800"
+            className="rounded-md p-2 text-neutral-400 hover:bg-neutral-900"
             aria-label="Close profile menu"
           >
             <FiX className="h-5 w-5" />
@@ -213,17 +213,17 @@ export default function Navbar() {
         </div>
         
         <div className="p-4">
-          <div className="flex items-center gap-4 mb-6 p-4 rounded-xl bg-gray-50 dark:bg-gray-800/50">
+          <div className="flex items-center gap-4 mb-6 p-4 rounded-md bg-[#111111] border border-neutral-800">
             <img 
               src={session? session.img :"https://api.dicebear.com/7.x/avataaars/svg?seed=Felix"} 
               alt="User" 
-              className="h-12 w-12 rounded-full bg-gray-200 dark:bg-gray-700"
+              className="h-12 w-12 rounded-full bg-neutral-800"
             />
             <div>
-              <p className="font-semibold text-gray-900 dark:text-white">
+              <p className="font-semibold text-white">
                 {session ? session.name : 'Sign in'}
               </p>
-              <p className="text-sm text-gray-500 dark:text-gray-400">
+              <p className="text-sm text-neutral-400">
                 {session ? session.email : 'Sign in to access your account'}
               </p>
             </div>
@@ -233,31 +233,31 @@ export default function Navbar() {
             <>
               <ul className="space-y-1">
                 <li>
-                  <button className="w-full flex items-center gap-3 rounded-lg px-4 py-3 text-left text-gray-700 hover:bg-gray-100 dark:text-gray-300 dark:hover:bg-gray-800 transition-colors">
-                    <FiUser className="h-5 w-5 text-gray-400" />
+                  <button className="w-full flex items-center gap-3 rounded-md px-4 py-3 text-left text-neutral-300 hover:bg-neutral-900 transition-colors">
+                    <FiUser className="h-5 w-5 text-neutral-500" />
                     <span className="font-medium">Your Profile</span>
                   </button>
                 </li>
                 <li>
-                  <button className="w-full flex items-center gap-3 rounded-lg px-4 py-3 text-left text-gray-700 hover:bg-gray-100 dark:text-gray-300 dark:hover:bg-gray-800 transition-colors">
-                    <FiSettings className="h-5 w-5 text-gray-400" />
+                  <button className="w-full flex items-center gap-3 rounded-md px-4 py-3 text-left text-neutral-300 hover:bg-neutral-900 transition-colors">
+                    <FiSettings className="h-5 w-5 text-neutral-500" />
                     <span className="font-medium">Settings</span>
                   </button>
                 </li>
               </ul>
 
-              <div className="mt-6 border-t border-gray-200 pt-6 dark:border-gray-800">
-                <button onClick = {logout} className="w-full flex items-center gap-3 rounded-lg px-4 py-3 text-left text-red-600 hover:bg-red-50 dark:text-red-400 dark:hover:bg-red-900/20 transition-colors font-medium">
+              <div className="mt-6 border-t border-neutral-800 pt-6">
+                <button onClick = {logout} className="w-full flex items-center gap-3 rounded-md px-4 py-3 text-left text-red-400 hover:bg-red-950/30 transition-colors font-medium">
                   <FiLogOut className="h-5 w-5" />
                   Sign out
                 </button>
               </div>
             </>
           ) : (
-            <div className="mt-6 border-t border-gray-200 pt-6 dark:border-gray-800">
+            <div className="mt-6 border-t border-neutral-800 pt-6">
               <a
                 href="/auth/login"
-                className="w-full flex items-center gap-3 rounded-lg px-4 py-3 text-left text-blue-600 hover:bg-blue-50 dark:text-blue-400 dark:hover:bg-blue-900/20 transition-colors font-medium"
+                className="w-full flex items-center gap-3 rounded-md px-4 py-3 text-left text-neutral-200 hover:bg-neutral-900 transition-colors font-medium"
               >
                 <FiUser className="h-5 w-5" />
                 Sign in

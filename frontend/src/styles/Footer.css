@@ -1,13 +1,9 @@
 .site-footer {
   width: min(980px, calc(100% - 24px));
   margin: 24px auto 16px;
-  border-radius: 16px;
+  border-radius: 6px;
   border: 1px solid var(--border);
-  background: linear-gradient(
-    135deg,
-    color-mix(in srgb, var(--bg) 86%, var(--accent)) 0%,
-    color-mix(in srgb, var(--bg) 72%, var(--accent)) 100%
-  );
+  background: #050505;
   color: var(--text);
   box-shadow: var(--shadow);
 }
