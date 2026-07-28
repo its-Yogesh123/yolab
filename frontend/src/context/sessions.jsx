@@ -7,7 +7,9 @@ export const SessionProvider = ({ children }) => {
   const [loading, setLoading] = useState(true);
   useEffect(() => {
     const checkSession = async () => {
-      console.log("Checking session...");
+      if (import.meta.env.MODE !== 'production') {
+        console.log("Checking session...");
+      }
       try {
         const res = await fetch("http://localhost:8000/auth/session", {
           method: "GET",
@@ -16,11 +18,15 @@ export const SessionProvider = ({ children }) => {
 
         const data = await res.json();
         const status = res.status;
-        console.log("data",data);
-        console.log("status",status);
+        if (import.meta.env.MODE !== 'production') {
+          console.log("data",data);
+          console.log("status",status);
+        }
         setSession(data.user);  
       } catch (err) {
-        console.log("Error checking session:",err);
+        if (import.meta.env.MODE !== 'production') {
+          console.log("Error checking session:",err);
+        }
         setSession(null);
       } finally {
         setLoading(false);

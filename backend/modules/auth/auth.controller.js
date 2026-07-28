@@ -2,10 +2,13 @@ import bcrypt from "bcrypt";
 import jwt from "jsonwebtoken";
 import User from "../users/user.model.js";
 import { generateToken, validateToken } from "./auth.services.js";
+import Subscription from "../subscription/subscription.model.js";
 
 // Local database authentication with JWT
 export const loginWithEmailPassword = async (req, res) => {
-  console.log("req Received : ",req.body);
+  if (process.env.NODE_ENV !== 'production') {
+    console.log("req Received : ",req.body);
+  }
   try {
     const { email, password } = req.body;
     if (!email || !password) {
@@ -64,8 +67,12 @@ export const registerWithEmailPassword = async (req, res) => {
       return res.status(400).json({ message: "User already exists" });
     }
     const hashedPassword = await bcrypt.hash(password, 10);
-    const newUser = await User.create({ name, email, password: hashedPassword ,authProvider: "local"});
-    const token = generateToken(newUser);
+    const newUser = await User.create({ name, email, password: hashedPassword, authProvider: "local" });
+
+    // Auto-create a Free subscription for every new user
+    await Subscription.create({ userId: newUser._id });
+
+    const token = generateToken({ id: newUser._id, email: newUser.email, role: newUser.role });
     return res.status(201).json({
       message: "User Registered Success",
       token,
@@ -93,7 +100,9 @@ export const logout = (req,res)=>{
 }
 
 export const manageSession = (req,res)=>{
-  console.log("Session check req received",req.cookies);
+  if (process.env.NODE_ENV !== 'production') {
+    console.log("Session check req received",req.cookies);
+  }
   try{
     const token = req.cookies?.token;
     if(!token){

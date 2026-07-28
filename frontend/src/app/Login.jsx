@@ -32,8 +32,10 @@ const Login = () => {
     if(status === 200){
       const data = await res.json();
       setSession(data.user);
-      console.log(data);
-      console.log(session);
+      if (import.meta.env.MODE !== 'production') {
+        console.log(data);
+        console.log(session);
+      }
     }
     else{
       alert("Login failed");

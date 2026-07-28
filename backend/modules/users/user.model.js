@@ -11,26 +11,31 @@ const userSchema = new mongoose.Schema({
         unique: true
     },
     authProvider: {
-        type:String,
-        enum: ["local", "auth0"],
+        type: String,
+        enum: ["local", "googleOAuth"],
         required: true,
-
     },
-    auth0Id:{
-        type : String,
+    // Google OAuth fields
+    googleId: {
+        type: String,
         unique: true,
-        sparse: true 
+        sparse: true   // allows multiple nulls
     },
+    img: {
+        type: String,
+        default: ""
+    },
+    // Local auth fields
     password: {
         type: String,
-        select: false
+        select: false  // never returned unless explicitly asked
     },
     role: {
         type: String,
-        enum: ['admin', 'user'],
-        default: 'user'
+        enum: ["admin", "user"],
+        default: "user"
     }
 }, { timestamps: true });
 
-const User = mongoose.model('User', userSchema);
+const User = mongoose.model("User", userSchema);
 export default User;

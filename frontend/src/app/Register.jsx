@@ -27,13 +27,17 @@ const Register = () => {
       return;
     }
     // Replace with your API call for registration.
-    console.log("Register payload:", registerData);
+    if (import.meta.env.MODE !== 'production') {
+      console.log("Register payload:", registerData);
+    }
   };
 
   const handleForgotPasswordSubmit = (event) => {
     event.preventDefault();
     // Replace with your API call for forgot password.
-    console.log("Forgot password email:", forgotEmail);
+    if (import.meta.env.MODE !== 'production') {
+      console.log("Forgot password email:", forgotEmail);
+    }
   };
 
   const handleGoogleRegister = () => {

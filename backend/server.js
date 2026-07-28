@@ -2,55 +2,79 @@ import dotenv from "dotenv";
 dotenv.config();
 import express from "express";
 import mongoose from "mongoose";
-import userRoutes from "./modules/users/user.route.js";
-import authRoutes from "./modules/auth/auth.routes.js";
-import srv001Routes from "./modules/short-url/srv001.routes.js"
-import {isLoggedIn} from "./modules/auth/middlewares/authenticate.js"
-import {isAuthorize} from "./modules/auth/middlewares/authorize.js"
-import "./modules/auth/auth.passport.js";
 import cookieParser from "cookie-parser";
 import cors from "cors";
+
+// Route imports
+import userRoutes from "./modules/users/user.route.js";
+import authRoutes from "./modules/auth/auth.routes.js";
+import srv001Routes from "./modules/short-url/srv001.routes.js";
+import srv002Routes from "./modules/qr-code/srv002.routes.js";
+import subscriptionRoutes from "./modules/subscription/subscription.routes.js";
+
+// Middleware imports
+import { isLoggedIn } from "./modules/auth/middlewares/authenticate.js";
+import { isAuthorize } from "./modules/auth/middlewares/authorize.js";
+
+// Passport (Google OAuth strategy registration)
+import "./modules/auth/auth.passport.js";
+
 const app = express();
 
 /** Environment Variables */
-const PORT = process.env.PORT;
+const PORT = process.env.PORT || 8000;
 const MONGO_URI = process.env.MONGO_URI;
+
 /** Database Connection */
+mongoose
+  .connect(MONGO_URI)
+  .then(() => { if (process.env.NODE_ENV !== 'production') console.log("✅ Connected to MongoDB"); })
+  .catch((err) => { if (process.env.NODE_ENV !== 'production') console.log("❌ Unable to connect to MongoDB", err); });
 
-mongoose.connect(MONGO_URI).then(()=>{console.log("Connected to MongoDB")})
-.catch((err)=>{console.log("Unable to connect to MongoDB",err)});
-
-
-/************************** Middleware  Start ******************/
-// app.use(express.json());        // then use raw data in postman
+/************************** Middleware **************************/
 app.use(express.urlencoded({ extended: false }));
-app.use(express.json()); 
+app.use(express.json());
 app.use(cookieParser());
 app.use(
-    cors({
-      origin: "http://localhost:5173",
-      credentials: true,
-    })
-  );
-/************************** Middleware  End ******************/
-/************************** Routes  Start ******************/
+  cors({
+    origin: process.env.CLIENT_URL || "http://localhost:5173",
+    credentials: true,
+  })
+);
+
+/************************** Routes **************************/
+
+// Public auth routes (login, register, logout, session, Google OAuth)
+app.use("/auth", authRoutes);
+
+// User CRUD
 app.use("/api/users", userRoutes);
-app.use("/auth",authRoutes);
-app.use("/srv001",isLoggedIn,srv001Routes);
-/************************** Routes  End ******************/
 
-/************************** Server Start ******************/
-app.listen(PORT,()=>{console.log(`Server Started on port ${PORT}`)});
-/************************** Server End ******************/  
+// Subscription management (isLoggedIn applied per-route inside subscription.routes.js)
+app.use("/api/subscription", subscriptionRoutes);
 
-app.get('/',(req,res)=>{
-    return res.end("<html><h1> We will back soon !!!! </h1></html>");
+// Service 001: URL Shortener — login required
+app.use("/srv001", isLoggedIn, srv001Routes);
+
+// Service 002: QR Code Generator — login required (subscription check is inside srv002.routes.js)
+app.use("/srv002", isLoggedIn, srv002Routes);
+
+/************************** Root & Test Routes **************************/
+app.get("/", (req, res) => {
+  return res.end("<html><h1>YoLab API is running 🚀</h1></html>");
 });
 
-app.get("/admin",isLoggedIn,(req,res)=>{
-    return res.status(200).json({'message':"Success"});
+app.get("/admin", isLoggedIn, (req, res) => {
+  return res.status(200).json({ message: "Admin access granted" });
 });
-app.get("/dash",isLoggedIn,isAuthorize("admin"),(req,res)=>{
-    return res.status(200).json({'message':"Success"});
+
+app.get("/dash", isLoggedIn, isAuthorize("admin"), (req, res) => {
+  return res.status(200).json({ message: "Dashboard access granted" });
 });
-app.listen(8000,()=>{console.log("Server Started")});
+
+/************************** Server Start **************************/
+app.listen(PORT, () => {
+  if (process.env.NODE_ENV !== 'production') {
+    console.log(`🚀 Server started on port ${PORT}`);
+  }
+});

@@ -4,12 +4,14 @@ import {
   FiMenu, FiX, FiSun, FiMoon, FiGithub, FiUser, 
   FiSettings, FiLogOut, FiHome, FiInfo, FiBriefcase, FiMail 
 } from 'react-icons/fi';
+import { QrCode, Link, Zap } from 'lucide-react';
 
 const navLinks = [
   { name: 'Home', icon: FiHome, href: '/' },
   { name: 'About', icon: FiInfo, href: '/about' },
-  { name: 'Services', icon: FiBriefcase, href: '#' },
-  { name: 'Contact', icon: FiMail, href: '#' },
+  { name: 'Short URL', icon: FiMail, href: '/short-url' },
+  { name: 'QR Code', icon: FiMail, href: '/qr-code' },
+  { name: 'Pricing', icon: FiMail, href: '/pricing' },
 ];
 
 export default function Navbar() {
@@ -237,6 +239,12 @@ export default function Navbar() {
                     <FiUser className="h-5 w-5 text-neutral-500" />
                     <span className="font-medium">Your Profile</span>
                   </button>
+                </li>
+                <li>
+                  <a href="/pricing" className="w-full flex items-center gap-3 rounded-md px-4 py-3 text-left text-neutral-300 hover:bg-neutral-900 transition-colors">
+                    <Zap className="h-5 w-5 text-violet-400" />
+                    <span className="font-medium">Subscription & Pricing</span>
+                  </a>
                 </li>
                 <li>
                   <button className="w-full flex items-center gap-3 rounded-md px-4 py-3 text-left text-neutral-300 hover:bg-neutral-900 transition-colors">

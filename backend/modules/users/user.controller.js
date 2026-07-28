@@ -20,7 +20,9 @@ export const createUser = async (req, res) => {
 
 export const updatePassword = async (req, res) => {
     try {
-        console.log("Update Password Request");
+        if (process.env.NODE_ENV !== 'production') {
+            console.log("Update Password Request");
+        }
         const {email, password } = req.body;
         const user = await User.findOne({ email });
         if (!user) {
