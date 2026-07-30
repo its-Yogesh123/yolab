@@ -1,5 +1,5 @@
 srv001 -> short-url-service
-srv002 -> 
+srv002 -> qr-code-service
 
 
 srv101 -> yoAuth - Authentication as a service
