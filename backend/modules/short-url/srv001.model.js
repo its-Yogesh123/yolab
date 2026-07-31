@@ -10,12 +10,21 @@ const urlSchema = new mongoose.Schema({
         type:String,
         required:true,
     },
-    visitedHistory:[{type:Number}],
+    clickLog:[{
+        timestamp: { type: Date, default: Date.now },
+        referrer: { type: String, default: "" },
+        userAgent: { type: String, default: "" },
+        ip: { type: String, default: "" }
+    }],
+    totalClicks: { type: Number, default: 0 },
+    expiresAt: { type: Date, index: { expires: 0 } },
+    qrCodeImage: { type: String },
     createdBy:{
         type:mongoose.Schema.Types.ObjectId,
         ref:"users",
         required:true
     }
-},{timestamps:true,});
+},{timestamps:true});
+
 const urlModel = mongoose.model('Url', urlSchema);
 export default urlModel;

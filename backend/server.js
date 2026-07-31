@@ -5,6 +5,8 @@ import mongoose from "mongoose";
 import cookieParser from "cookie-parser";
 import cors from "cors";
 
+//
+import { getRedirectUrl } from "./modules/short-url/srv001.controller.js";
 // Route imports
 import userRoutes from "./modules/users/user.route.js";
 import authRoutes from "./modules/auth/auth.routes.js";
@@ -52,6 +54,9 @@ app.use("/api/users", userRoutes);
 
 // Subscription management (isLoggedIn applied per-route inside subscription.routes.js)
 app.use("/api/subscription", subscriptionRoutes);
+
+// Public redirect for short URLs (no auth required)
+app.get("/s/:shortId", getRedirectUrl);
 
 // Service 001: URL Shortener — login required
 app.use("/srv001", isLoggedIn, srv001Routes);
