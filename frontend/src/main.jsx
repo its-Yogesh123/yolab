@@ -1,7 +1,7 @@
 import "./styles/index.css";
 import { StrictMode } from 'react'
 import { createRoot } from 'react-dom/client'
-import { BrowserRouter ,Routes,Route} from 'react-router-dom'
+import { BrowserRouter ,Routes,Route, Navigate} from 'react-router-dom'
 import App from './app/App.jsx'
 import Login from './app/Login.jsx'
 import Register from './app/Register.jsx'
@@ -11,8 +11,10 @@ import { SessionProvider } from "./context/sessions";
 import Testing from "./app/pages/testing";
 import TemplateMarketplace from "./prompts-lib/page";
 import ShortUrlService from "./short-url/page";
+import ShortUrlRedirect from "./short-url/ShortUrlRedirect";
 import QRCodeService from "./qr-code/page";
 import PricingPage from "./subscription/PricingPage";
+const API = import.meta.env.VITE_API_URL || "http://localhost:8000";
 createRoot(document.getElementById('root')).render(
   <StrictMode>
     <SessionProvider>
@@ -28,6 +30,7 @@ createRoot(document.getElementById('root')).render(
         {/* Prompt  */}
          <Route path="prompts-ai-marketplace" element={<TemplateMarketplace />} />
          <Route path="short-url" element={<ShortUrlService />} />
+          <Route path="/s/:shortId" element={<ShortUrlRedirect />} />
          <Route path="qr-code" element={<QRCodeService />} />
          <Route path="pricing" element={<PricingPage />} />
       </Routes>
