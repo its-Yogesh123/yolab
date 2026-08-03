@@ -14,6 +14,7 @@ import ShortUrlService from "./short-url/page";
 import ShortUrlRedirect from "./short-url/ShortUrlRedirect";
 import QRCodeService from "./qr-code/page";
 import PricingPage from "./subscription/PricingPage";
+import AnalyticsDashboard from "./admin/AnalyticsDashboard";
 const API = import.meta.env.VITE_API_URL || "http://localhost:8000";
 createRoot(document.getElementById('root')).render(
   <StrictMode>
@@ -33,6 +34,7 @@ createRoot(document.getElementById('root')).render(
           <Route path="/s/:shortId" element={<ShortUrlRedirect />} />
          <Route path="qr-code" element={<QRCodeService />} />
          <Route path="pricing" element={<PricingPage />} />
+         <Route path="admin/analytics" element={<AnalyticsDashboard />} />
       </Routes>
     </BrowserRouter>
     </SessionProvider>

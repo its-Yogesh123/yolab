@@ -4,7 +4,7 @@ import {
   FiMenu, FiX, FiSun, FiMoon, FiGithub, FiUser, 
   FiSettings, FiLogOut, FiHome, FiInfo, FiBriefcase, FiMail 
 } from 'react-icons/fi';
-import { QrCode, Link, Zap } from 'lucide-react';
+import { QrCode, Link, Zap, BarChart3 } from 'lucide-react';
 
 const navLinks = [
   { name: 'Home', icon: FiHome, href: '/' },
@@ -243,9 +243,17 @@ export default function Navbar() {
                 <li>
                   <a href="/pricing" className="w-full flex items-center gap-3 rounded-md px-4 py-3 text-left text-neutral-300 hover:bg-neutral-900 transition-colors">
                     <Zap className="h-5 w-5 text-violet-400" />
-                    <span className="font-medium">Subscription & Pricing</span>
+                    <span className="font-medium">Subscription &amp; Pricing</span>
                   </a>
                 </li>
+                {session?.role === "admin" && (
+                  <li>
+                    <a href="/admin/analytics" className="w-full flex items-center gap-3 rounded-md px-4 py-3 text-left text-neutral-300 hover:bg-neutral-900 transition-colors">
+                      <BarChart3 className="h-5 w-5 text-neutral-400" />
+                      <span className="font-medium">Analytics Dashboard</span>
+                    </a>
+                  </li>
+                )}
                 <li>
                   <button className="w-full flex items-center gap-3 rounded-md px-4 py-3 text-left text-neutral-300 hover:bg-neutral-900 transition-colors">
                     <FiSettings className="h-5 w-5 text-neutral-500" />
