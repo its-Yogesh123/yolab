@@ -4,6 +4,7 @@ import passport from "passport";
 import { Strategy as GoogleStrategy } from "passport-google-oauth20";
 import User from "../users/user.model.js";
 import Subscription from "../subscription/subscription.model.js";
+import { trackActivity } from "../analytics/analytics.services.js";
 
 /**
  * Google OAuth Strategy — Find or Create user in MongoDB.
@@ -43,6 +44,14 @@ passport.use(
             user.img            = img;
             user.authProvider   = "googleOAuth";
             await user.save();
+
+            // Existing local user — now linked Google for the first time
+            trackActivity({
+              userIdentifier: email,
+              actionName: "Google Login (Account Linked)",
+              userId: String(user._id),
+              isLogin: true,
+            });
           } else {
             // 3. Brand-new user — create + subscription
             user = await User.create({
@@ -55,7 +64,24 @@ passport.use(
 
             // Auto-create Free subscription (same as local register)
             await Subscription.create({ userId: user._id });
+
+            // Brand-new Google user
+            trackActivity({
+              userIdentifier: email,
+              actionName: "New User Registered (Google)",
+              userId: String(user._id),
+              isNewUser: true,
+              isLogin: true,
+            });
           }
+        } else {
+          // Returning Google user
+          trackActivity({
+            userIdentifier: email,
+            actionName: "Google Login",
+            userId: String(user._id),
+            isLogin: true,
+          });
         }
 
         return done(null, user); // user._id is now a real MongoDB ObjectId

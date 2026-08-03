@@ -13,6 +13,7 @@ import authRoutes from "./modules/auth/auth.routes.js";
 import srv001Routes from "./modules/short-url/srv001.routes.js";
 import srv002Routes from "./modules/qr-code/srv002.routes.js";
 import subscriptionRoutes from "./modules/subscription/subscription.routes.js";
+import analyticsRoutes from "./modules/analytics/analytics.routes.js";
 
 // Middleware imports
 import { isLoggedIn } from "./modules/auth/middlewares/authenticate.js";
@@ -52,8 +53,11 @@ app.use("/auth", authRoutes);
 // User CRUD
 app.use("/api/users", userRoutes);
 
-// Subscription management (isLoggedIn applied per-route inside subscription.routes.js)
+// Subscription management
 app.use("/api/subscription", subscriptionRoutes);
+
+// Admin: Analytics (isLoggedIn + isAuthorize("admin") applied inside analytics.routes.js)
+app.use("/api/admin/analytics", analyticsRoutes);
 
 // Public redirect for short URLs (no auth required)
 app.get("/s/:shortId", getRedirectUrl);

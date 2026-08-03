@@ -1,5 +1,6 @@
 import QRCode from "qrcode";
 import QRCodeDoc from "./srv002.model.js";
+import { trackActivity } from "../analytics/analytics.services.js";
 
 /**
  * POST /srv002/qr
@@ -67,6 +68,16 @@ export const generateQRCode = async (req, res) => {
     if (process.env.NODE_ENV !== 'production') {
       console.log(`--- [generateQRCode Controller] FINISHED (Returning 201) ---\n`);
     }
+
+    // Fire-and-forget analytics
+    trackActivity({
+      userIdentifier: req.user.email || String(req.user.id),
+      actionName: "Generated QR Code",
+      userId: String(req.user.id),
+      service: "qrGenerator",
+      isLogin: true,
+    });
+
     return res.status(201).json({
       message: "QR code generated successfully.",
       data: {

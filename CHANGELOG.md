@@ -20,7 +20,48 @@ Versioning follows [Semantic Versioning](https://semver.org/).
 
 ---
 
-## [0.3.0] — 2026-07-29
+## [2.1.0] — 2026-08-04
+
+### Added — Analytics System (Lean MVP)
+
+- **`backend/modules/analytics/analytics.model.js`** — Two new MongoDB schemas:
+  - `DailyStats`: One document per calendar day (`YYYY-MM-DD`). Atomic `$inc` counters for `newUsers`, `activeUsers`, `serviceUsage.qrGenerator`, `serviceUsage.shortUrl`.
+  - `ActivityFeed`: Audit log capped to 100 entries via query-based trim. Fields: `timestamp`, `actionName`, `userIdentifier`.
+
+- **`backend/modules/analytics/analytics.services.js`** — Core tracking service:
+  - In-memory active users cache (`Map<DateString, Set<UserId>>`) to deduplicate daily active user counts without Redis.
+  - Auto-flush at midnight via `setTimeout` — no cron job needed.
+  - `trackActivity({ userIdentifier, actionName, userId, service, isNewUser, isLogin })` — fire-and-forget async function. Never throws, never blocks user requests.
+
+- **`backend/modules/analytics/analytics.controller.js`**:
+  - `getSummary`: Returns today's stats + all-time aggregation via `$group` across all `DailyStats` documents. Pulls real `totalUsers` count from the `Users` collection.
+  - `getFeed`: Returns 50 most recent `ActivityFeed` entries sorted by timestamp descending.
+
+- **`backend/modules/analytics/analytics.routes.js`** — Admin-only routes:
+  - `GET /api/admin/analytics/summary` — protected by `isLoggedIn` + `isAuthorize("admin")`
+  - `GET /api/admin/analytics/feed` — protected by `isLoggedIn` + `isAuthorize("admin")`
+
+- **`frontend/src/admin/AnalyticsDashboard.jsx`** — Admin dashboard at `/admin/analytics`:
+  - Matches the exact short-url dark theme (`bg-[#050505]`, `bg-[#111111]`, `bg-neutral-200` buttons).
+  - 4 `StatCard` components: Total Users, Active Users (Today), Short URLs (Today), QR Codes (Today).
+  - `ServicePopularityPanel`: Animated progress bars for all-time service usage.
+  - `RecentActivityPanel`: Scrollable list of the last 50 activity events with timestamps and user identifiers.
+  - Frontend access guard: redirects non-admin users (`session.role !== "admin"`) to `/`.
+  - Refresh button with spinner, last-updated timestamp in nav.
+
+### Changed
+
+- **`backend/modules/analytics/analytics.services.js`** — `trackActivity` calls added to 3 existing controllers:
+  - `auth.controller.js`: Fires on login (`isLogin: true`) and register (`isNewUser: true`, `isLogin: true`).
+  - `srv001.controller.js`: Fires on short URL creation (`service: "shortUrl"`).
+  - `srv002.controller.js`: Fires on QR code generation (`service: "qrGenerator"`).
+- **`backend/server.js`** — Mounted `analyticsRoutes` at `/api/admin/analytics`.
+- **`frontend/src/main.jsx`** — Added `/admin/analytics` route.
+- **`frontend/src/shared/Navigation.jsx`** — Added admin-only "Analytics Dashboard" link (`BarChart3` icon) in the profile drawer, conditionally rendered when `session.role === "admin"`.
+
+---
+
+## [2.0.0] — 2026-07-29
 
 ### Added — Subscription System (Platform-Level)
 
@@ -83,7 +124,7 @@ Versioning follows [Semantic Versioning](https://semver.org/).
 
 ---
 
-## [0.2.0] — 2026-07-28 *(Initial structured release)*
+## [1.0.0] — 2026-07-28 *(Initial structured release)*
 
 ### Added
 

@@ -3,6 +3,7 @@ import urlModel from "./srv001.model.js";
 import qrcode from "qrcode";
 import Subscription from "../subscription/subscription.model.js";
 import { getLimitForService } from "../subscription/subscription.plans.js";
+import { trackActivity } from "../analytics/analytics.services.js";
 
 const MAX_CLICK_LOGS = 1000;
 
@@ -56,7 +57,16 @@ export const generateShortUrl = async (req, res) => {
       qrCodeImage,
       createdBy: userId,
     });
-    
+
+    // Fire-and-forget analytics
+    trackActivity({
+      userIdentifier: req.user.email || String(userId),
+      actionName: `Created Short URL (${shortId})`,
+      userId: String(userId),
+      service: "shortUrl",
+      isLogin: true,
+    });
+
     return res.status(201).json({
       data: doc,
       subscription: req.subscription // from hasActiveSubscription middleware, if still used

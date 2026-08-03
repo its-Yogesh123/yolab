@@ -3,6 +3,7 @@ import jwt from "jsonwebtoken";
 import User from "../users/user.model.js";
 import { generateToken, validateToken } from "./auth.services.js";
 import Subscription from "../subscription/subscription.model.js";
+import { trackActivity } from "../analytics/analytics.services.js";
 
 // Local database authentication with JWT
 export const loginWithEmailPassword = async (req, res) => {
@@ -41,6 +42,15 @@ export const loginWithEmailPassword = async (req, res) => {
       sameSite: "none", 
       maxAge: 1* 24 * 60 * 60 * 1000,
     });
+
+    // Fire-and-forget analytics (errors are caught and logged inside trackActivity)
+    trackActivity({
+      userIdentifier: user.email,
+      actionName: "User Login",
+      userId: String(user._id),
+      isLogin: true,
+    });
+
     return res.status(200).json({
       message: "Login successful",
       user: {
@@ -73,6 +83,16 @@ export const registerWithEmailPassword = async (req, res) => {
     await Subscription.create({ userId: newUser._id });
 
     const token = generateToken({ id: newUser._id, email: newUser.email, role: newUser.role });
+
+    // Fire-and-forget analytics
+    trackActivity({
+      userIdentifier: newUser.email,
+      actionName: "New User Registered",
+      userId: String(newUser._id),
+      isNewUser: true,
+      isLogin: true,
+    });
+
     return res.status(201).json({
       message: "User Registered Success",
       token,
@@ -87,17 +107,38 @@ export const registerWithEmailPassword = async (req, res) => {
   }
 }
 
-//  
-export const logout = (req,res)=>{
+// Logout — track the event before clearing the cookie
+export const logout = (req, res) => {
+  // validateToken is already imported at the top of this file.
+  // Decode the cookie to get the user's email for the activity feed.
+  try {
+    const token = req.cookies?.token;
+    if (token) {
+      try {
+        const decoded = validateToken(token);
+        if (decoded?.email) {
+          trackActivity({
+            userIdentifier: decoded.email,
+            actionName: "User Logout",
+            userId: String(decoded.id),
+          });
+        }
+      } catch (_) {
+        // Token was invalid / expired — still proceed with logout
+      }
+    }
+  } catch (_) {
+    // silent — logout always succeeds regardless
+  }
+
   res.clearCookie("token", {
     httpOnly: true,
     secure: true,
     sameSite: "none",
   });
-  return res.status(200).json({
-    message:"Logout Success"
-  });
-}
+  return res.status(200).json({ message: "Logout Success" });
+};
+
 
 export const manageSession = (req,res)=>{
   if (process.env.NODE_ENV !== 'production') {
