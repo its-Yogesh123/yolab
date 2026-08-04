@@ -30,7 +30,7 @@ const team = [
     name: "Yogesh Kumar",
     role: "Founder & CEO",
     bio: "Final Year NIT Kurukshetra undergraduate in Computer Engineering",
-    image: "https://i.pravatar.cc/150?u=alex",
+    image: "https://github.com/its-Yogesh123.png",
   },
 ];
 
