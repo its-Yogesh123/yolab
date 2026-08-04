@@ -1,6 +1,7 @@
 import { DailyStats, ActivityFeed } from "./analytics.model.js";
 import User from "../users/user.model.js";
 
+
 /**
  * GET /api/admin/analytics/summary
  * Returns today's stats + all-time aggregated totals.
@@ -69,6 +70,36 @@ export const getFeed = async (req, res) => {
       .limit(50);
 
     return res.status(200).json({ count: feed.length, data: feed });
+  } catch (error) {
+    return res.status(500).json({ message: error.message });
+  }
+};
+
+/**
+ * GET /api/analytics/public
+ * Public endpoint — returns aggregate platform stats safe to expose.
+ */
+export const getPublicStats = async (req, res) => {
+  try {
+    const totalUsers = await User.countDocuments();
+
+    const agg = await DailyStats.aggregate([
+      {
+        $group: {
+          _id: null,
+          totalQr:  { $sum: "$serviceUsage.qrGenerator" },
+          totalUrl: { $sum: "$serviceUsage.shortUrl" },
+        },
+      },
+    ]);
+
+    const stats = agg[0] || { totalQr: 0, totalUrl: 0 };
+
+    return res.status(200).json({
+      totalUsers,
+      totalQrCodes: stats.totalQr,
+      totalShortUrls: stats.totalUrl,
+    });
   } catch (error) {
     return res.status(500).json({ message: error.message });
   }
