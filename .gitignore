@@ -67,3 +67,57 @@ Thumbs.db
 # Optional: local DB / Prisma
 # ----------------------------
 prisma/migrations/
+
+
+# ----------------------------
+# Python
+# ----------------------------
+# Byte-compiled / optimized / DLL files
+__pycache__/
+*.py[cod]
+*$py.class
+
+# C extensions
+*.so
+
+# Distribution / packaging
+.Python
+build/
+develop-eggs/
+dist/
+downloads/
+eggs/
+.eggs/
+lib/
+lib64/
+parts/
+sdist/
+var/
+wheels/
+share/python-wheels/
+*.egg-info/
+.installed.cfg
+*.egg
+MANIFEST
+
+# Virtual Environments
+.venv/
+venv/
+ENV/
+env.bak/
+venv.bak/
+
+# Environment variables
+.env
+.venv
+
+# VS Code / IDEs for Python
+.vscode/
+.idea/
+*.swp
+.mypy_cache/
+.pytest_cache/
+.coverage
+htmlcov/
+
+*.sh

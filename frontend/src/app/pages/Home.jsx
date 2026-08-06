@@ -1,4 +1,5 @@
 import React from 'react';
+import { useNavigate } from 'react-router-dom';
 import { 
   QrCode, 
   Link as LinkIcon, 
@@ -11,7 +12,8 @@ import {
   Workflow, 
   Code2, 
   ArrowRight, 
-  TerminalSquare 
+  TerminalSquare,
+  Sparkles
 } from 'lucide-react';
 
 const Button = ({ children, variant = 'default', className = '', ...props }) => {
@@ -63,13 +65,15 @@ const HeroSection = () => (
 );
 
 const ServicesSection = () => {
+  const navigate = useNavigate();
   const services = [
-    { icon: QrCode, title: 'QR Generator', desc: 'Generate high-res, customizable QR codes with embedded logos and dynamic routing.' },
-    { icon: LinkIcon, title: 'URL Shortener', desc: 'Create branded short links, track click analytics, and manage link expirations.' },
-    { icon: Braces, title: 'API Mocker', desc: 'Instantly mock REST/GraphQL endpoints for frontend development and testing.' },
-    { icon: FileJson, title: 'JSON Tools', desc: 'Format, validate, and minify complex JSON payloads with deep syntax highlighting.' },
-    { icon: Hash, title: 'Base64 Encoder', desc: 'Securely encode or decode strings and files to Base64 in real-time.' },
-    { icon: Regex, title: 'Regex Tester', desc: 'Build and test complex regular expressions against custom string payloads.' },
+    { icon: QrCode, title: 'QR Generator', desc: 'Generate high-res, customizable QR codes with embedded logos and dynamic routing.', path: '/qr-code' },
+    { icon: LinkIcon, title: 'URL Shortener', desc: 'Create branded short links, track click analytics, and manage link expirations.', path: '/short-url' },
+    { icon: Sparkles, title: 'Image Processing', desc: 'Enhance images with Gaussian blur, median filter, sharpening, and histogram equalization — powered by OnePic.', path: '/image-processing', badge: 'New' },
+    { icon: Braces, title: 'API Mocker', desc: 'Instantly mock REST/GraphQL endpoints for frontend development and testing.', path: null },
+    { icon: FileJson, title: 'JSON Tools', desc: 'Format, validate, and minify complex JSON payloads with deep syntax highlighting.', path: null },
+    { icon: Hash, title: 'Base64 Encoder', desc: 'Securely encode or decode strings and files to Base64 in real-time.', path: null },
+    { icon: Regex, title: 'Regex Tester', desc: 'Build and test complex regular expressions against custom string payloads.', path: null },
   ];
 
   return (
@@ -85,10 +89,22 @@ const ServicesSection = () => {
               <div className="h-12 w-12 rounded-md border border-[#262626] bg-[#0a0a0a] text-[#d4d4d4] flex items-center justify-center mb-6 group-hover:border-[#737373] transition-colors duration-300">
                 <service.icon className="h-6 w-6" />
               </div>
-              <h3 className="text-xl font-semibold text-[#f5f5f5] mb-3">{service.title}</h3>
+              <div className="flex items-center gap-2 mb-3">
+                <h3 className="text-xl font-semibold text-[#f5f5f5]">{service.title}</h3>
+                {service.badge && (
+                  <span className="text-[10px] font-bold uppercase tracking-wider px-2 py-0.5 rounded border border-[#404040] bg-[#1a1a1a] text-[#a3a3a3]">
+                    {service.badge}
+                  </span>
+                )}
+              </div>
               <p className="text-[#a3a3a3] flex-grow mb-6">{service.desc}</p>
-              <Button variant="secondary" className="w-full transition-colors duration-300">
-                Launch Tool
+              <Button
+                variant="secondary"
+                className="w-full transition-colors duration-300"
+                onClick={() => service.path && navigate(service.path)}
+                disabled={!service.path}
+              >
+                {service.path ? 'Launch Tool' : 'Coming Soon'}
               </Button>
             </Card>
           ))}

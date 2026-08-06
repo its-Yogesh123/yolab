@@ -15,6 +15,7 @@ import srv002Routes from "./modules/qr-code/srv002.routes.js";
 import subscriptionRoutes from "./modules/subscription/subscription.routes.js";
 import analyticsRoutes from "./modules/analytics/analytics.routes.js";
 import feedbackRoutes from "./modules/feedback/feedback.routes.js";
+import onepicRoutes from "./modules/onepic/onepic.routes.js";
 
 // Middleware imports
 import { isLoggedIn } from "./modules/auth/middlewares/authenticate.js";
@@ -72,6 +73,10 @@ app.use("/srv001", isLoggedIn, srv001Routes);
 
 // Service 002: QR Code Generator — login required (subscription check is inside srv002.routes.js)
 app.use("/srv002", isLoggedIn, srv002Routes);
+
+// OnePic: Image Processing — login required, proxied to Python microservice
+// app.use("/api/image", onepicRoutes);    // developer
+app.use("/api/image", isLoggedIn, onepicRoutes);
 
 /************************** Root & Test Routes **************************/
 app.get("/", (req, res) => {
