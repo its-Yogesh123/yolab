@@ -47,6 +47,14 @@ function UsageBar({ used, limit, isUnlimited }) {
 export default function QRCodeService() {
   const { session } = useSession();
   const navigate = useNavigate();
+
+  // ── Per-page SEO ──
+  useEffect(() => {
+    document.title = 'QR Code Generator — Free & Customizable | YoLab';
+    const meta = document.querySelector('meta[name="description"]');
+    if (meta) meta.setAttribute('content', 'Generate high-quality QR codes for any URL or text. Customize size, colors, and download as PNG — free with your YoLab account.');
+  }, []);
+
   const [content, setContent] = useState("");
   const [size, setSize] = useState(300);
   const [darkColor, setDarkColor] = useState("#000000");
@@ -164,19 +172,19 @@ export default function QRCodeService() {
       <nav className="sticky top-0 z-50 border-b border-neutral-800 bg-[#050505]/90 backdrop-blur-md">
         <div className="container mx-auto px-4 h-16 flex items-center justify-between max-w-5xl">
           <div className="flex items-center gap-2">
-            <div className="bg-violet-600 p-1.5 rounded-md">
-              <QrCode className="w-5 h-5 text-white" />
+            <div className="bg-[#1a1a1a] border border-[#262626] p-1.5 rounded-md">
+              <QrCode className="w-5 h-5 text-[#d4d4d4]" />
             </div>
             <span className="text-xl font-bold tracking-tight">
-              Yo<span className="text-neutral-400">QR</span>
+              Yo<span className="text-[#737373]">QR</span>
             </span>
           </div>
           <div className="flex items-center gap-3">
             {!subLoading && subscription && (
               <Badge
                 className={`text-xs ${isPro
-                  ? "bg-violet-500/20 text-violet-300 border-violet-500/30"
-                  : "bg-neutral-800 text-neutral-400 border-neutral-700"
+                  ? "bg-[#1a1a1a] text-[#d4d4d4] border-[#404040]"
+                  : "bg-[#111111] text-[#737373] border-[#333333]"
                 }`}
               >
                 {isPro ? <Crown className="w-3 h-3 mr-1" /> : null}
@@ -236,7 +244,7 @@ export default function QRCodeService() {
                 </div>
               </div>
               <a href="/pricing">
-                <Button className="bg-violet-600 hover:bg-violet-500 text-white text-sm gap-2 shrink-0">
+                <Button className="bg-[#e5e5e5] hover:bg-white text-[#050505] text-sm gap-2 shrink-0">
                   Upgrade to Pro <ArrowRight className="w-4 h-4" />
                 </Button>
               </a>
@@ -249,16 +257,16 @@ export default function QRCodeService() {
           <Card className="bg-[#111111] border-neutral-800 relative overflow-hidden">
             {!session && (
               <div className="absolute inset-0 z-10 bg-black/60 backdrop-blur-sm flex flex-col items-center justify-center p-6 text-center">
-                <div className="bg-neutral-900/80 p-6 rounded-2xl border border-neutral-800 max-w-sm w-full space-y-4 shadow-2xl">
-                  <div className="w-12 h-12 bg-violet-600/20 rounded-full flex items-center justify-center mx-auto mb-2">
-                    <QrCode className="w-6 h-6 text-violet-400" />
+                <div className="bg-[#111111]/90 p-6 rounded-md border border-[#333333] max-w-sm w-full space-y-4 shadow-2xl">
+                  <div className="w-12 h-12 bg-[#1a1a1a] border border-[#333333] rounded-full flex items-center justify-center mx-auto mb-2">
+                    <QrCode className="w-6 h-6 text-[#d4d4d4]" />
                   </div>
                   <h3 className="text-xl font-bold text-white">Sign in to Generate</h3>
-                  <p className="text-sm text-neutral-400">
+                  <p className="text-sm text-[#a3a3a3]">
                     You need an account to create, customize, and save QR codes.
                   </p>
                   <Button 
-                    className="w-full bg-violet-600 hover:bg-violet-500 text-white mt-2 gap-2"
+                    className="w-full bg-[#e5e5e5] hover:bg-white text-[#050505] mt-2 gap-2"
                     onClick={() => navigate("/auth/login")}
                   >
                     Sign In to Continue <ArrowRight className="w-4 h-4" />
@@ -284,7 +292,7 @@ export default function QRCodeService() {
                     <Button
                       type="submit"
                       disabled={loading || limitReached || !content.trim()}
-                      className="h-12 px-6 bg-violet-600 hover:bg-violet-500 text-white font-semibold"
+                      className="h-12 px-6 bg-[#e5e5e5] hover:bg-white text-[#050505] font-semibold"
                     >
                       {loading ? <Loader2 className="w-5 h-5 animate-spin" /> : (
                         <><QrCode className="w-4 h-4 mr-2" /> Generate</>
@@ -302,7 +310,7 @@ export default function QRCodeService() {
                     <select
                       value={size}
                       onChange={(e) => setSize(Number(e.target.value))}
-                      className="w-full h-9 bg-neutral-900 border border-neutral-700 rounded-md px-2 text-sm text-neutral-200 focus:outline-none focus:ring-1 focus:ring-violet-500"
+                      className="w-full h-9 bg-[#0a0a0a] border border-[#333333] rounded-md px-2 text-sm text-[#d4d4d4] focus:outline-none focus:ring-1 focus:ring-[#737373]"
                     >
                       <option value={200}>200 × 200</option>
                       <option value={300}>300 × 300</option>
@@ -364,7 +372,7 @@ export default function QRCodeService() {
                       <div className="flex flex-wrap gap-2 justify-center sm:justify-start">
                         <Button
                           onClick={handleDownload}
-                          className="bg-violet-600 hover:bg-violet-500 text-white gap-2"
+                          className="bg-[#e5e5e5] hover:bg-white text-[#050505] gap-2"
                         >
                           <Download className="w-4 h-4" /> Download PNG
                         </Button>
@@ -388,8 +396,8 @@ export default function QRCodeService() {
               {history.map((qr) => (
                 <Card key={qr.id} className="bg-[#111111] border-neutral-800 group">
                   <CardContent className="p-4 flex items-start gap-3">
-                    <div className="w-10 h-10 rounded-md bg-neutral-900 border border-neutral-800 flex items-center justify-center shrink-0">
-                      <QrCode className="w-5 h-5 text-violet-400" />
+                    <div className="w-10 h-10 rounded-md bg-[#0a0a0a] border border-[#262626] flex items-center justify-center shrink-0">
+                      <QrCode className="w-5 h-5 text-[#d4d4d4]" />
                     </div>
                     <div className="flex-1 min-w-0">
                       <p className="text-sm text-neutral-200 truncate font-medium">{qr.content}</p>

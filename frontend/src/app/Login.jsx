@@ -1,131 +1,171 @@
-import { useState } from "react";
-import "../styles/Login.css";
+import { useState, useEffect } from "react";
+import Navbar from "../shared/Navigation.jsx";
 import Footer from "../shared/Footer.jsx";
-import  Navbar from "../shared/Navigation.jsx";
 import { useSession } from "@/context/sessions";
+import { ArrowRight, Mail, Lock, Loader2 } from "lucide-react";
+
+const API = import.meta.env.VITE_API_URL || "http://localhost:8000";
 
 const Login = () => {
-  const {session,setSession,loading} = useSession();
-  const [formData, setFormData] = useState({
-    email: "",
-    password: "",
-  });
-  const [processing,setProcessing] = useState(false);
-  const handleChange = (event) => {
-    const { name, value } = event.target;
-    setFormData((prev) => ({
-      ...prev,
-      [name]: value,
-    }));
+  const { setSession, loading } = useSession();
+  const [formData, setFormData] = useState({ email: "", password: "" });
+  const [processing, setProcessing] = useState(false);
+  const [error, setError] = useState("");
+
+  useEffect(() => {
+    document.title = "Sign In | YoLab";
+  }, []);
+
+  const handleChange = (e) => {
+    const { name, value } = e.target;
+    setFormData((prev) => ({ ...prev, [name]: value }));
+    if (error) setError("");
   };
-  const handleEmailPasswordLogin = async (e) => {
+
+  const handleSubmit = async (e) => {
     e.preventDefault();
     setProcessing(true);
-    const res = await fetch("http://localhost:8000/auth/login", {
-      method: "POST",
-      credentials: "include", // cookie will be set
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify(formData),
-    });
-    const status = res.status;
-    setProcessing(false);
-    if(status === 200){
+    setError("");
+    try {
+      const res = await fetch(`${API}/auth/login`, {
+        method: "POST",
+        credentials: "include",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(formData),
+      });
       const data = await res.json();
-      setSession(data.user);
-      if (import.meta.env.MODE !== 'production') {
-        console.log(data);
-        console.log(session);
+      if (res.ok) {
+        setSession(data.user);
+        window.location.href = "/";
+      } else {
+        setError(data.message || "Invalid email or password.");
       }
-    }
-    else{
-      alert("Login failed");
+    } catch {
+      setError("Something went wrong. Please try again.");
+    } finally {
+      setProcessing(false);
     }
   };
 
   const handleGoogleLogin = () => {
-    if (session) {
-      alert("You are already logged in.");
-      return;
-    }
-    window.location.href = "http://localhost:8000/auth/google";
-
+    window.location.href = `${API}/auth/google`;
   };
-  if(loading) return (<h1>Loading...</h1>);
+
+  if (loading) return (
+    <div className="min-h-screen bg-[#050505] flex items-center justify-center">
+      <Loader2 className="w-6 h-6 text-neutral-400 animate-spin" />
+    </div>
+  );
+
   return (
-    <div className="login-shell">
+    <div className="min-h-screen bg-[#050505] text-[#f5f5f5] font-sans flex flex-col">
       <Navbar />
-      <div className="login-page">
-        <div className="login-card">
-          <h1 className="login-title">Login</h1>
-          <p className="login-subtitle">Access your account using email/password or Google.</p>
 
-          <form onSubmit={handleEmailPasswordLogin} className="login-form">
-            <label className="login-label">
-              Email
-              <div className="input-icon-wrap">
-                <span className="input-icon">@</span>
-                <input
-                  type="email"
-                  name="email"
-                  placeholder="you@example.com"
-                  value={formData.email}
-                  onChange={handleChange}
-                  required
-                  className="login-input input-with-icon"
-                />
-              </div>
-            </label>
+      <main className="flex-1 flex items-center justify-center px-4 py-16">
+        <div className="w-full max-w-md">
 
-            <label className="login-label">
-              Password
-              <div className="input-icon-wrap">
-                <span className="input-icon">#</span>
-                <input
-                  type="password"
-                  name="password"
-                  placeholder="Enter your password"
-                  value={formData.password}
-                  onChange={handleChange}
-                  required
-                  className="login-input input-with-icon"
-                />
-              </div>
-            </label>
-
-            <button type="submit" className="login-primary-btn" disabled={processing}>
-              Login with Email / Password
-            </button>
-          </form>
-
-          <div className="login-divider">
-            <span className="divider-line" />
-            <span className="divider-text">OR</span>
-            <span className="divider-line" />
+          {/* Header */}
+          <div className="text-center mb-8">
+            <h1 className="text-3xl font-extrabold tracking-tight text-[#f5f5f5] mb-2">
+              Welcome back
+            </h1>
+            <p className="text-[#a3a3a3] text-sm">
+              Sign in to your YoLab account to continue.
+            </p>
           </div>
 
-          <button
-            type="button"
-            onClick={handleGoogleLogin}
-            className="login-google-btn"
-            disabled={processing}
-          >
-            <svg width="18" height="18" viewBox="0 0 24 24" aria-hidden="true">
-              <path
-                fill="#EA4335"
-                d="M12 10.2v3.9h5.5c-.2 1.2-1.4 3.6-5.5 3.6-3.3 0-6-2.7-6-6s2.7-6 6-6c1.9 0 3.2.8 3.9 1.5l2.7-2.6C16.8 3 14.6 2 12 2 6.5 2 2 6.5 2 12s4.5 10 10 10c5.8 0 9.6-4.1 9.6-9.8 0-.7-.1-1.3-.2-2H12z"
-              />
-            </svg>
-            Login with Google
-          </button>
+          {/* Card */}
+          <div className="rounded-md border border-[#262626] bg-[#111111] p-8 shadow-xl">
 
-          <p className="login-footer-text">
-            New user?{" "}
-            <a href="/auth/register" className="login-register-link">
-              Register
-            </a>
-          </p>
+            {/* Google */}
+            <button
+              type="button"
+              onClick={handleGoogleLogin}
+              disabled={processing}
+              className="w-full flex items-center justify-center gap-3 h-11 rounded-md border border-[#333333] bg-[#0f0f0f] text-[#f5f5f5] text-sm font-medium hover:bg-[#1a1a1a] hover:border-[#525252] transition-all duration-200 disabled:opacity-50 mb-6"
+            >
+              <svg width="16" height="16" viewBox="0 0 24 24" aria-hidden="true" className="shrink-0">
+                <path fill="#EA4335" d="M12 10.2v3.9h5.5c-.2 1.2-1.4 3.6-5.5 3.6-3.3 0-6-2.7-6-6s2.7-6 6-6c1.9 0 3.2.8 3.9 1.5l2.7-2.6C16.8 3 14.6 2 12 2 6.5 2 2 6.5 2 12s4.5 10 10 10c5.8 0 9.6-4.1 9.6-9.8 0-.7-.1-1.3-.2-2H12z" />
+              </svg>
+              Continue with Google
+            </button>
+
+            {/* Divider */}
+            <div className="flex items-center gap-3 mb-6">
+              <div className="flex-1 h-px bg-[#262626]" />
+              <span className="text-xs text-[#525252] font-medium uppercase tracking-widest">or</span>
+              <div className="flex-1 h-px bg-[#262626]" />
+            </div>
+
+            {/* Form */}
+            <form onSubmit={handleSubmit} className="space-y-4">
+              <div>
+                <label className="block text-xs font-medium text-[#a3a3a3] mb-1.5">
+                  Email address
+                </label>
+                <div className="relative">
+                  <Mail className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-[#525252]" />
+                  <input
+                    type="email"
+                    name="email"
+                    placeholder="you@example.com"
+                    value={formData.email}
+                    onChange={handleChange}
+                    required
+                    className="w-full h-11 pl-10 pr-4 rounded-md bg-[#0a0a0a] border border-[#333333] text-[#f5f5f5] text-sm placeholder:text-[#525252] focus:outline-none focus:border-[#737373] transition-colors"
+                  />
+                </div>
+              </div>
+
+              <div>
+                <label className="block text-xs font-medium text-[#a3a3a3] mb-1.5">
+                  Password
+                </label>
+                <div className="relative">
+                  <Lock className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-[#525252]" />
+                  <input
+                    type="password"
+                    name="password"
+                    placeholder="Enter your password"
+                    value={formData.password}
+                    onChange={handleChange}
+                    required
+                    className="w-full h-11 pl-10 pr-4 rounded-md bg-[#0a0a0a] border border-[#333333] text-[#f5f5f5] text-sm placeholder:text-[#525252] focus:outline-none focus:border-[#737373] transition-colors"
+                  />
+                </div>
+              </div>
+
+              {/* Error */}
+              {error && (
+                <p className="text-sm text-red-400 bg-red-950/30 border border-red-900/40 rounded-md px-3 py-2">
+                  {error}
+                </p>
+              )}
+
+              <button
+                type="submit"
+                disabled={processing}
+                className="w-full h-11 flex items-center justify-center gap-2 rounded-md bg-[#e5e5e5] hover:bg-white text-[#050505] text-sm font-semibold transition-all duration-200 disabled:opacity-50 mt-2"
+              >
+                {processing ? (
+                  <Loader2 className="w-4 h-4 animate-spin" />
+                ) : (
+                  <>Sign In <ArrowRight className="w-4 h-4" /></>
+                )}
+              </button>
+            </form>
+
+            {/* Footer link */}
+            <p className="text-center text-sm text-[#737373] mt-6">
+              Don't have an account?{" "}
+              <a href="/auth/register" className="text-[#d4d4d4] hover:text-white font-medium transition-colors">
+                Create one free
+              </a>
+            </p>
+          </div>
         </div>
-      </div>
+      </main>
+
       <Footer />
     </div>
   );

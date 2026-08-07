@@ -54,6 +54,13 @@ export default function ShortUrlService() {
   const { session } = useSession();
   const navigate = useNavigate();
 
+  // ── Per-page SEO ──
+  useEffect(() => {
+    document.title = 'YoShort — Free URL Shortener with Click Analytics | YoLab';
+    const meta = document.querySelector('meta[name="description"]');
+    if (meta) meta.setAttribute('content', 'Shorten long URLs into branded short links. Track clicks, set custom aliases, manage link expiry, and scan QR codes — all free on YoLab.');
+  }, []);
+
   // State
   const [darkMode, setDarkMode] = useState(true);
   const [longUrl, setLongUrl] = useState("");
@@ -299,7 +306,9 @@ export default function ShortUrlService() {
             animate={{ opacity: 1, y: 0 }}
             className="w-full max-w-2xl relative z-10"
           >
-            <Card className="relative bg-[#111111] border-neutral-800 shadow-xl rounded-md overflow-hidden">
+            {/* min-h-[320px] ensures the absolute overlay always has height to fill,
+                even on mobile when CardContent is blurred/hidden */}
+            <Card className="relative bg-[#111111] border-neutral-800 shadow-xl rounded-md overflow-hidden min-h-[320px]">
               {!session && (
                 <div className="absolute inset-0 z-20 bg-black/60 backdrop-blur-sm flex flex-col items-center justify-center p-6 text-center">
                   <div className="bg-neutral-900/90 p-6 rounded-2xl border border-neutral-800 max-w-sm w-full space-y-4 shadow-2xl">
@@ -320,7 +329,8 @@ export default function ShortUrlService() {
                 </div>
               )}
 
-              <CardContent className={`p-6 ${!session ? "opacity-30 pointer-events-none select-none blur-sm" : ""}`}>
+              {/* min-h keeps the card tall enough for the overlay when session is null */}
+              <CardContent className={`p-6 min-h-[320px] ${!session ? "opacity-30 pointer-events-none select-none blur-sm" : ""}`}>
                 <form onSubmit={handleShorten} className="space-y-4">
                   <div className="flex flex-col md:flex-row gap-3">
                     <div className="relative flex-1">

@@ -300,6 +300,7 @@ const UploadZone = ({ onFile }) => {
       onDragLeave={() => setDragging(false)}
       onDrop={handleDrop}
       onClick={() => inputRef.current.click()}
+      className="ip-upload-zone"
       style={{
         border: `2px dashed ${dragging ? C.accent : C.border}`,
         borderRadius: '12px',
@@ -555,7 +556,10 @@ export default function ImageProcessingPage() {
 
       {/* Main content */}
       <div style={{ maxWidth: '1280px', margin: '0 auto', padding: '28px 24px' }}>
-        <div style={{ display: 'grid', gridTemplateColumns: '280px 1fr', gap: '20px', alignItems: 'start' }}>
+        <div
+          className="ip-grid"
+          style={{ display: 'grid', gridTemplateColumns: '280px 1fr', gap: '20px', alignItems: 'start' }}
+        >
 
           {/* ── LEFT SIDEBAR — sticky + internally scrollable ── */}
           <div style={{
@@ -581,7 +585,7 @@ export default function ImageProcessingPage() {
                 </div>
 
                 {/* Op cards */}
-                <div style={{ display: 'flex', flexDirection: 'column', gap: '4px' }}>
+                <div className="ip-ops-grid" style={{ display: 'flex', flexDirection: 'column', gap: '4px' }}>
                   {group.ops.map((op) => (
                     <OperationCard
                       key={op.id} op={op}
@@ -668,7 +672,7 @@ export default function ImageProcessingPage() {
             {!originalUrl ? (
               <UploadZone onFile={handleFile} />
             ) : (
-              <div style={{ display: 'flex', gap: '14px', flexWrap: 'wrap' }}>
+              <div className="ip-preview-row" style={{ display: 'flex', gap: '14px', flexWrap: 'wrap' }}>
                 <PreviewCard label="Original" src={originalUrl} />
                 <PreviewCard label="Processed" src={processedUrl} isBlob empty="Apply an operation to see the result" />
               </div>
@@ -698,30 +702,69 @@ export default function ImageProcessingPage() {
         </div>
       </div>
 
-      {/* Global keyframes + scrollbar styles */}
+      {/* Global keyframes + responsive styles */}
       <style>{`
-        @keyframes spin { from { transform: rotate(0deg); } to { transform: rotate(360deg); } }
+        @keyframes spin  { from { transform: rotate(0deg); } to { transform: rotate(360deg); } }
         @keyframes pulse {
           0%, 100% { opacity: 0.3; transform: scale(0.85); }
-          50% { opacity: 1; transform: scale(1.15); }
+          50%       { opacity: 1;   transform: scale(1.15); }
         }
+
+        /* ── Scrollbar styling ── */
         .ip-sidebar::-webkit-scrollbar,
         .ip-right::-webkit-scrollbar { width: 4px; }
         .ip-sidebar::-webkit-scrollbar-track,
         .ip-right::-webkit-scrollbar-track { background: transparent; }
         .ip-sidebar::-webkit-scrollbar-thumb,
-        .ip-right::-webkit-scrollbar-thumb {
-          background: #2a2a2a;
-          border-radius: 999px;
-        }
+        .ip-right::-webkit-scrollbar-thumb { background: #2a2a2a; border-radius: 999px; }
         .ip-sidebar::-webkit-scrollbar-thumb:hover,
         .ip-right::-webkit-scrollbar-thumb:hover { background: #404040; }
+
+        /* ── Mobile — single column layout ── */
         @media (max-width: 768px) {
-          .ip-grid { grid-template-columns: 1fr !important; }
-          .ip-sidebar, .ip-right {
+
+          /* Page padding */
+          .ip-page-pad { padding: 16px !important; }
+
+          /* Stack sidebar above the right panel */
+          .ip-grid {
+            grid-template-columns: 1fr !important;
+            gap: 12px !important;
+          }
+
+          /* Remove sticky + fixed heights — let them flow naturally */
+          .ip-sidebar,
+          .ip-right {
             position: static !important;
             max-height: none !important;
             overflow-y: visible !important;
+            overflow-x: visible !important;
+          }
+
+          /* Operation buttons — horizontal scrollable strip on mobile */
+          .ip-ops-grid {
+            display: flex !important;
+            flex-direction: row !important;
+            overflow-x: auto !important;
+            gap: 6px !important;
+            padding-bottom: 4px;
+            scrollbar-width: none;
+          }
+          .ip-ops-grid::-webkit-scrollbar { display: none; }
+          .ip-ops-grid > button {
+            flex-shrink: 0 !important;
+            min-width: 120px !important;
+          }
+
+          /* Preview cards stack vertically */
+          .ip-preview-row {
+            flex-direction: column !important;
+          }
+
+          /* Upload zone — less padding on small screens */
+          .ip-upload-zone {
+            min-height: 180px !important;
+            padding: 32px 16px !important;
           }
         }
       `}</style>

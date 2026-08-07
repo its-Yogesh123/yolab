@@ -68,6 +68,13 @@ export default function PricingPage() {
   const [upgrading, setUpgrading] = useState(false);
   const [cancelling, setCancelling] = useState(false);
 
+  // ── Per-page SEO ──
+  useEffect(() => {
+    document.title = 'Pricing — Free & Pro Plans | YoLab';
+    const meta = document.querySelector('meta[name="description"]');
+    if (meta) meta.setAttribute('content', 'YoLab Free gives you 5 short URLs and 10 QR codes monthly. Upgrade to Pro for unlimited access to every current and upcoming YoLab service.');
+  }, []);
+
   useEffect(() => {
     if (!session) { setLoading(false); return; }
     fetchSubscription();
