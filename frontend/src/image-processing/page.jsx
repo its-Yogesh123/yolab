@@ -354,9 +354,9 @@ const PreviewCard = ({ label, src, isBlob, empty }) => (
       )}
     </div>
     <div style={{
-      minHeight: '300px', display: 'flex', alignItems: 'center',
-      justifyContent: 'center', background: '#0a0a0a',
-    }}>
+    minHeight: '300px', display: 'flex', alignItems: 'center',
+    justifyContent: 'center', background: '#0a0a0a',
+  }} className="ip-preview-card-body">
       {src ? (
         <img src={src} alt={label} style={{ maxWidth: '100%', maxHeight: '420px', objectFit: 'contain', display: 'block' }} />
       ) : (
@@ -524,7 +524,7 @@ export default function ImageProcessingPage() {
 
       {/* Page header */}
       <div style={{ borderBottom: `1px solid ${C.border}`, background: C.card }}>
-        <div style={{ maxWidth: '1280px', margin: '0 auto', padding: '24px 24px' }}>
+        <div className="ip-header-pad" style={{ maxWidth: '1280px', margin: '0 auto', padding: '24px 24px' }}>
           <button
             onClick={() => navigate('/')}
             style={{ background: 'none', border: 'none', color: C.muted, cursor: 'pointer', display: 'flex', alignItems: 'center', gap: '6px', fontSize: '13px', padding: 0, marginBottom: '16px' }}
@@ -532,21 +532,22 @@ export default function ImageProcessingPage() {
             <ArrowLeft size={14} /> Back to Services
           </button>
           <div style={{ display: 'flex', alignItems: 'center', gap: '14px', flexWrap: 'wrap' }}>
-            <div style={{
+            <div className="ip-header-icon" style={{
               width: '44px', height: '44px', borderRadius: '10px',
               border: `1px solid ${C.border}`, background: '#0a0a0a',
               display: 'flex', alignItems: 'center', justifyContent: 'center',
+              flexShrink: 0,
             }}>
               <Sparkles size={20} color={C.accent} strokeWidth={1.5} />
             </div>
             <div>
               <div style={{ display: 'flex', alignItems: 'center', gap: '10px', flexWrap: 'wrap' }}>
-                <h1 style={{ margin: 0, fontSize: '20px', fontWeight: 700, color: C.text }}>
+                <h1 className="ip-header-title" style={{ margin: 0, fontSize: '20px', fontWeight: 700, color: C.text }}>
                   OnePic — Image Processing
                 </h1>
                 <Badge>Phase 1 &amp; 2</Badge>
               </div>
-              <p style={{ margin: '3px 0 0', fontSize: '13px', color: C.muted }}>
+              <p className="ip-header-subtitle" style={{ margin: '3px 0 0', fontSize: '13px', color: C.muted }}>
                 Enhancement and edge detection — powered by the OnePic microservice.
               </p>
             </div>
@@ -555,7 +556,7 @@ export default function ImageProcessingPage() {
       </div>
 
       {/* Main content */}
-      <div style={{ maxWidth: '1280px', margin: '0 auto', padding: '28px 24px' }}>
+      <div className="ip-main-pad" style={{ maxWidth: '1280px', margin: '0 auto', padding: '28px 24px' }}>
         <div
           className="ip-grid"
           style={{ display: 'grid', gridTemplateColumns: '280px 1fr', gap: '20px', alignItems: 'start' }}
@@ -600,7 +601,7 @@ export default function ImageProcessingPage() {
 
             {/* Params panel */}
             {currentOp.params.length > 0 && (
-              <div style={{
+              <div className="ip-params" style={{
                 marginTop: '8px', border: `1px solid ${C.border}`,
                 borderRadius: '10px', background: C.card, padding: '14px',
               }}>
@@ -619,7 +620,7 @@ export default function ImageProcessingPage() {
             )}
 
             {/* Action buttons */}
-            <div style={{ display: 'flex', flexDirection: 'column', gap: '7px', marginTop: '4px' }}>
+            <div className="ip-action-row" style={{ display: 'flex', flexDirection: 'column', gap: '7px', marginTop: '4px' }}>
               <Btn
                 onClick={handleProcess}
                 disabled={!originalFile || loading}
@@ -689,7 +690,7 @@ export default function ImageProcessingPage() {
                 </p>
                 <PhaseBadge label={currentGroup.phase} color={currentGroup.color} />
               </div>
-              <p style={{ margin: 0, fontSize: '14px', color: C.muted, lineHeight: 1.7 }}>
+              <p className="ip-about-text" style={{ margin: 0, fontSize: '14px', color: C.muted, lineHeight: 1.7 }}>
                 {currentOp.description}
               </p>
               {currentOp.params.length === 0 && (
@@ -710,7 +711,7 @@ export default function ImageProcessingPage() {
           50%       { opacity: 1;   transform: scale(1.15); }
         }
 
-        /* ── Scrollbar styling ── */
+        /* ── Scrollbar ── */
         .ip-sidebar::-webkit-scrollbar,
         .ip-right::-webkit-scrollbar { width: 4px; }
         .ip-sidebar::-webkit-scrollbar-track,
@@ -720,19 +721,21 @@ export default function ImageProcessingPage() {
         .ip-sidebar::-webkit-scrollbar-thumb:hover,
         .ip-right::-webkit-scrollbar-thumb:hover { background: #404040; }
 
-        /* ── Mobile — single column layout ── */
+        /* ════════════════════════════════════════
+           ≤ 768px  — tablet / large phone
+        ════════════════════════════════════════ */
         @media (max-width: 768px) {
 
-          /* Page padding */
-          .ip-page-pad { padding: 16px !important; }
+          .ip-header-pad { padding: 16px !important; }
+          .ip-main-pad   { padding: 16px 12px !important; }
 
-          /* Stack sidebar above the right panel */
+          /* Single column */
           .ip-grid {
             grid-template-columns: 1fr !important;
             gap: 12px !important;
           }
 
-          /* Remove sticky + fixed heights — let them flow naturally */
+          /* Unstick panels */
           .ip-sidebar,
           .ip-right {
             position: static !important;
@@ -741,30 +744,122 @@ export default function ImageProcessingPage() {
             overflow-x: visible !important;
           }
 
-          /* Operation buttons — horizontal scrollable strip on mobile */
+          /* Ops → horizontal scroll strip */
           .ip-ops-grid {
             display: flex !important;
             flex-direction: row !important;
             overflow-x: auto !important;
             gap: 6px !important;
-            padding-bottom: 4px;
+            padding-bottom: 6px;
             scrollbar-width: none;
           }
           .ip-ops-grid::-webkit-scrollbar { display: none; }
           .ip-ops-grid > button {
             flex-shrink: 0 !important;
-            min-width: 120px !important;
+            min-width: 130px !important;
           }
 
           /* Preview cards stack vertically */
-          .ip-preview-row {
-            flex-direction: column !important;
-          }
+          .ip-preview-row { flex-direction: column !important; }
 
-          /* Upload zone — less padding on small screens */
+          /* Upload zone — reduced */
           .ip-upload-zone {
             min-height: 180px !important;
             padding: 32px 16px !important;
+          }
+        }
+
+        /* ════════════════════════════════════════
+           ≤ 480px  — small phone
+        ════════════════════════════════════════ */
+        @media (max-width: 480px) {
+
+          /* Even tighter page padding */
+          .ip-header-pad { padding: 12px !important; }
+          .ip-main-pad   { padding: 12px 10px !important; }
+
+          /* Shrink the page header icon + text */
+          .ip-header-icon {
+            width: 36px !important;
+            height: 36px !important;
+          }
+          .ip-header-title {
+            font-size: 16px !important;
+          }
+          .ip-header-subtitle {
+            font-size: 12px !important;
+          }
+
+          /* Op buttons: compact pill — icon + label, min-width 110 */
+          .ip-ops-grid > button {
+            min-width: 110px !important;
+            padding: 8px 10px !important;
+            font-size: 12px !important;
+            gap: 8px !important;
+          }
+
+          /* Params panel — full-width range input, bigger tap target */
+          .ip-params input[type=range] {
+            height: 28px !important;
+          }
+          .ip-params input[type=range]::-webkit-slider-thumb {
+            width: 20px !important;
+            height: 20px !important;
+          }
+          .ip-params > button {
+            padding: 8px 14px !important;
+            font-size: 12px !important;
+          }
+
+          /* Action buttons: side-by-side on very small screens */
+          .ip-action-row {
+            flex-direction: row !important;
+            gap: 8px !important;
+          }
+          .ip-action-row > button {
+            flex: 1 !important;
+            font-size: 12px !important;
+            padding: 10px 8px !important;
+          }
+
+          /* Upload zone — compact */
+          .ip-upload-zone {
+            min-height: 140px !important;
+            padding: 24px 12px !important;
+          }
+          .ip-upload-zone p { font-size: 13px !important; }
+
+          /* Preview min height — smaller */
+          .ip-preview-card-body {
+            min-height: 200px !important;
+          }
+
+          /* About section — smaller font */
+          .ip-about-text { font-size: 13px !important; }
+        }
+
+        /* ════════════════════════════════════════
+           ≤ 360px  — very small (Galaxy A series etc.)
+        ════════════════════════════════════════ */
+        @media (max-width: 360px) {
+
+          .ip-header-pad { padding: 10px !important; }
+          .ip-main-pad   { padding: 10px 8px !important; }
+
+          .ip-ops-grid > button {
+            min-width: 96px !important;
+            font-size: 11px !important;
+            padding: 7px 8px !important;
+          }
+
+          .ip-action-row > button {
+            font-size: 11px !important;
+            padding: 8px 6px !important;
+          }
+
+          .ip-upload-zone {
+            min-height: 120px !important;
+            padding: 20px 8px !important;
           }
         }
       `}</style>
