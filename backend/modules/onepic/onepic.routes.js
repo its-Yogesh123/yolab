@@ -15,6 +15,9 @@ import {
   brightnessContrast,
   grayscale,
   invertColors,
+  convolution,
+  threshold,
+  dft,
 } from "./onepic.controller.js";
 
 const router = Router();
@@ -101,6 +104,15 @@ router.post("/grayscale", upload.single("file"), grayscale);
 
 /** POST /api/image/invert */
 router.post("/invert", upload.single("file"), invertColors);
+
+/** POST /api/image/convolution — body: kernel (JSON string) */
+router.post("/convolution", upload.single("file"), convolution);
+
+/** POST /api/image/threshold — body: threshold (int 0-255), mode ('binary'|'otsu') */
+router.post("/threshold", upload.single("file"), threshold);
+
+/** POST /api/image/dft — Discrete Fourier Transform magnitude spectrum */
+router.post("/dft", upload.single("file"), dft);
 
 // ──────────────────────────────────────────────
 //  Multer error handler

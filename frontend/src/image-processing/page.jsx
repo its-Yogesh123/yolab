@@ -210,6 +210,47 @@ const PHASE_GROUPS = [
         icon: '◍',
         params: [],
       },
+      {
+        id: 'convolution',
+        label: 'Custom Convolution',
+        endpoint: '/api/image/convolution',
+        description: 'Apply any NxN kernel to the image as a convolution. Choose a preset or understand the math: each pixel becomes the weighted sum of its neighbours defined by your kernel.',
+        icon: '⧞',
+        params: [
+          {
+            key: 'kernel',
+            label: 'Kernel Preset',
+            type: 'select',
+            options: [
+              { label: 'Sharpen',     value: '[[0,-1,0],[-1,5,-1],[0,-1,0]]' },
+              { label: 'Edge Detect', value: '[[-1,-1,-1],[-1,8,-1],[-1,-1,-1]]' },
+              { label: 'Emboss',      value: '[[-2,-1,0],[-1,1,1],[0,1,2]]' },
+              { label: 'Box Blur',    value: '[[0.111,0.111,0.111],[0.111,0.111,0.111],[0.111,0.111,0.111]]' },
+            ],
+            default: '[[0,-1,0],[-1,5,-1],[0,-1,0]]',
+            unit: '',
+          },
+        ],
+      },
+      {
+        id: 'threshold',
+        label: 'Thresholding',
+        endpoint: '/api/image/threshold',
+        description: 'Segment the image into black and white. Binary mode uses a fixed cutoff value; Otsu mode automatically finds the optimal threshold by maximising inter-class variance.',
+        icon: '▨',
+        params: [
+          { key: 'threshold', label: 'Threshold Value', type: 'range', min: 0, max: 255, step: 1, default: 128, unit: '' },
+          { key: 'mode', label: 'Mode', type: 'select', options: ['binary', 'otsu'], default: 'binary', unit: '' },
+        ],
+      },
+      {
+        id: 'dft',
+        label: 'DFT Spectrum',
+        endpoint: '/api/image/dft',
+        description: 'Visualise the 2-D Discrete Fourier Transform magnitude spectrum. Bright areas show dominant spatial frequencies. Useful for understanding texture patterns, periodic noise, and filter design.',
+        icon: '∿',
+        params: [],
+      },
     ],
   },
 ];
@@ -495,18 +536,24 @@ const ParamControl = ({ param, value, onChange }) => {
           {param.label}
         </label>
         <div style={{ display: 'flex', gap: '6px', flexWrap: 'wrap' }}>
-          {param.options.map((opt) => (
-            <button key={opt} onClick={() => onChange(opt)} style={{
-              padding: '5px 12px', borderRadius: '6px',
-              border: `1px solid ${value === opt ? C.accent : C.border}`,
-              background: value === opt ? 'rgba(212,212,212,0.12)' : 'transparent',
-              color: value === opt ? C.accent : C.muted,
-              fontSize: '12px', fontWeight: 700, cursor: 'pointer',
-              transition: 'all 0.15s', fontFamily: 'monospace',
-            }}>
-              {param.unit ? `${opt}×${opt}` : opt}
-            </button>
-          ))}
+          {param.options.map((opt) => {
+            // Support both flat values and { label, value } objects
+            const optVal   = typeof opt === 'object' ? opt.value : opt;
+            const optLabel = typeof opt === 'object' ? opt.label : (param.unit ? `${opt}×${opt}` : String(opt));
+            const isActive = value === optVal;
+            return (
+              <button key={optVal} onClick={() => onChange(optVal)} style={{
+                padding: '5px 12px', borderRadius: '6px',
+                border: `1px solid ${isActive ? C.accent : C.border}`,
+                background: isActive ? 'rgba(212,212,212,0.12)' : 'transparent',
+                color: isActive ? C.accent : C.muted,
+                fontSize: '12px', fontWeight: 700, cursor: 'pointer',
+                transition: 'all 0.15s', fontFamily: 'monospace',
+              }}>
+                {optLabel}
+              </button>
+            );
+          })}
         </div>
       </div>
     );
@@ -612,10 +659,10 @@ export default function ImageProcessingPage() {
                 <h1 className="ip-header-title" style={{ margin: 0, fontSize: '20px', fontWeight: 700, color: C.text }}>
                   OnePic — Image Processing
                 </h1>
-                <Badge>Phase 1 &amp; 2</Badge>
+                <Badge>Phase 1, 2 &amp; 3</Badge>
               </div>
               <p className="ip-header-subtitle" style={{ margin: '3px 0 0', fontSize: '13px', color: C.muted }}>
-                Enhancement and edge detection — powered by the OnePic microservice.
+                Enhancement, edge detection and image transforms — powered by the OnePic microservice.
               </p>
             </div>
           </div>

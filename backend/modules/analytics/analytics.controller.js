@@ -13,7 +13,7 @@ export const getSummary = async (req, res) => {
     // Today's document
     const todayStats = await DailyStats.findOne({ date: today }) || {
       newUsers: 0, activeUsers: 0,
-      serviceUsage: { qrGenerator: 0, shortUrl: 0 },
+      serviceUsage: { qrGenerator: 0, shortUrl: 0, imageProcessing: 0 },
     };
 
     // All-time aggregation across every DailyStats document
@@ -21,17 +21,18 @@ export const getSummary = async (req, res) => {
       {
         $group: {
           _id: null,
-          totalNewUsers:    { $sum: "$newUsers" },
-          totalActiveUsers: { $sum: "$activeUsers" },
-          totalQrGenerator: { $sum: "$serviceUsage.qrGenerator" },
-          totalShortUrl:    { $sum: "$serviceUsage.shortUrl" },
+          totalNewUsers:       { $sum: "$newUsers" },
+          totalActiveUsers:    { $sum: "$activeUsers" },
+          totalQrGenerator:    { $sum: "$serviceUsage.qrGenerator" },
+          totalShortUrl:       { $sum: "$serviceUsage.shortUrl" },
+          totalImageProcessing:{ $sum: "$serviceUsage.imageProcessing" },
         },
       },
     ]);
 
     const agg = allTimeAgg[0] || {
       totalNewUsers: 0, totalActiveUsers: 0,
-      totalQrGenerator: 0, totalShortUrl: 0,
+      totalQrGenerator: 0, totalShortUrl: 0, totalImageProcessing: 0,
     };
 
     // Real total user count from Users collection (most accurate)
@@ -45,12 +46,13 @@ export const getSummary = async (req, res) => {
         serviceUsage: todayStats.serviceUsage,
       },
       allTime: {
-        totalUsers,                           // real count from DB
-        totalNewUsers:    agg.totalNewUsers,  // from daily tracking
+        totalUsers,
+        totalNewUsers:    agg.totalNewUsers,
         totalActiveUsers: agg.totalActiveUsers,
         serviceUsage: {
-          qrGenerator: agg.totalQrGenerator,
-          shortUrl:    agg.totalShortUrl,
+          qrGenerator:     agg.totalQrGenerator,
+          shortUrl:        agg.totalShortUrl,
+          imageProcessing: agg.totalImageProcessing,
         },
       },
     });
@@ -87,18 +89,29 @@ export const getPublicStats = async (req, res) => {
       {
         $group: {
           _id: null,
-          totalQr:  { $sum: "$serviceUsage.qrGenerator" },
-          totalUrl: { $sum: "$serviceUsage.shortUrl" },
+          totalQr:    { $sum: "$serviceUsage.qrGenerator" },
+          totalUrl:   { $sum: "$serviceUsage.shortUrl" },
+          totalImage: { $sum: "$serviceUsage.imageProcessing" },
         },
       },
     ]);
 
-    const stats = agg[0] || { totalQr: 0, totalUrl: 0 };
+    const stats = agg[0] || { totalQr: 0, totalUrl: 0, totalImage: 0 };
+
+    const dailyHistory = await DailyStats.find()
+      .sort({ date: -1 })
+      .limit(30)
+      .lean();
+
+    // Reverse to get chronological order (oldest to newest) for charts
+    dailyHistory.reverse();
 
     return res.status(200).json({
       totalUsers,
-      totalQrCodes: stats.totalQr,
-      totalShortUrls: stats.totalUrl,
+      totalQrCodes:        stats.totalQr,
+      totalShortUrls:      stats.totalUrl,
+      totalImagesProcessed: stats.totalImage,
+      dailyHistory:        dailyHistory,
     });
   } catch (error) {
     return res.status(500).json({ message: error.message });

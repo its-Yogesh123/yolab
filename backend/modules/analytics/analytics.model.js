@@ -9,8 +9,9 @@ const dailyStatsSchema = new mongoose.Schema({
   newUsers:    { type: Number, default: 0 },
   activeUsers: { type: Number, default: 0 },
   serviceUsage: {
-    qrGenerator: { type: Number, default: 0 },
-    shortUrl:    { type: Number, default: 0 },
+    qrGenerator:     { type: Number, default: 0 },
+    shortUrl:        { type: Number, default: 0 },
+    imageProcessing: { type: Number, default: 0 },
   },
 }, { timestamps: false });
 

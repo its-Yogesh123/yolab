@@ -1,5 +1,6 @@
 import axios from "axios";
 import FormData from "form-data";
+import { trackActivity } from "../analytics/analytics.services.js";
 
 const ONEPIC_BASE = process.env.ONEPIC_URL || "http://localhost:8001";
 
@@ -36,6 +37,15 @@ async function proxyToOnePic(endpoint, req, res, extraFields = {}) {
 
     res.set("Content-Type", "image/jpeg");
     res.set("Content-Disposition", "inline; filename=\"processed.jpg\"");
+
+    // Fire-and-forget analytics tracking
+    trackActivity({
+      userIdentifier: req.user?.email || req.user?._id || "anonymous",
+      actionName:     `Image Processed: ${endpoint}`,
+      userId:         req.user?._id?.toString(),
+      service:        "imageProcessing",
+    });
+
     return res.status(200).send(Buffer.from(response.data));
   } catch (err) {
     // Forward OnePic error details when available
@@ -131,4 +141,20 @@ export const grayscale = (req, res) => {
 
 export const invertColors = (req, res) => {
   return proxyToOnePic("/transform/invert", req, res);
+};
+
+export const convolution = (req, res) => {
+  // kernel is a JSON string, e.g. '[[0,-1,0],[-1,5,-1],[0,-1,0]]'
+  const kernel = req.body?.kernel || '[[0,-1,0],[-1,5,-1],[0,-1,0]]';
+  return proxyToOnePic("/transform/convolution", req, res, { kernel });
+};
+
+export const threshold = (req, res) => {
+  const thresholdVal = parseInt(req.body?.threshold, 10) ?? 128;
+  const mode         = req.body?.mode || 'binary';
+  return proxyToOnePic("/transform/threshold", req, res, { threshold: thresholdVal, mode });
+};
+
+export const dft = (req, res) => {
+  return proxyToOnePic("/transform/dft", req, res);
 };

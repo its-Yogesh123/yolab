@@ -2,7 +2,7 @@ import React, { useState, useEffect, useCallback } from "react";
 import { motion } from "framer-motion";
 import {
   Users, Activity, QrCode, Link as LinkIcon,
-  RefreshCw, Loader2, ShieldAlert, Clock
+  RefreshCw, Loader2, ShieldAlert, Clock, Image as ImageIcon
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
@@ -141,10 +141,12 @@ export default function AnalyticsDashboard() {
   const newToday    = summary?.today?.newUsers ?? 0;
   const qrAll       = summary?.allTime?.serviceUsage?.qrGenerator ?? 0;
   const urlAll      = summary?.allTime?.serviceUsage?.shortUrl ?? 0;
+  const imgAll      = summary?.allTime?.serviceUsage?.imageProcessing ?? 0;
   const qrToday     = summary?.today?.serviceUsage?.qrGenerator ?? 0;
   const urlToday    = summary?.today?.serviceUsage?.shortUrl ?? 0;
-  const totalApiCalls = qrToday + urlToday;
-  const maxService  = Math.max(qrAll, urlAll, 1);
+  const imgToday    = summary?.today?.serviceUsage?.imageProcessing ?? 0;
+  const totalApiCalls = qrToday + urlToday + imgToday;
+  const maxService  = Math.max(qrAll, urlAll, imgAll, 1);
 
   // ── Loading / guard states ──
   if (sessionLoading || (loading && !summary)) {
@@ -236,6 +238,13 @@ export default function AnalyticsDashboard() {
             sub={`${qrAll.toLocaleString()} all-time`}
             delay={0.15}
           />
+          <StatCard
+            icon={ImageIcon}
+            label="Images Processed (All-time)"
+            value={imgAll}
+            sub={imgToday > 0 ? `${imgToday} processed today` : "Cumulative total"}
+            delay={0.2}
+          />
         </section>
 
         {/* ── Body: Service Usage + Activity Feed ── */}
@@ -254,8 +263,9 @@ export default function AnalyticsDashboard() {
                 </CardTitle>
               </CardHeader>
               <CardContent className="space-y-5">
-                <ServiceBar label="🔗 Short URL"    value={urlAll} max={maxService} delay={0.25} />
-                <ServiceBar label="📱 QR Generator" value={qrAll}  max={maxService} delay={0.3}  />
+                <ServiceBar label="🔗 Short URL"       value={urlAll} max={maxService} delay={0.25} />
+                <ServiceBar label="📱 QR Generator"    value={qrAll}  max={maxService} delay={0.3}  />
+                <ServiceBar label="🖼️ Image Processing" value={imgAll} max={maxService} delay={0.35} />
               </CardContent>
             </Card>
           </motion.div>

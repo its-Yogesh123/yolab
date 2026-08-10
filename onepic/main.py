@@ -10,6 +10,7 @@ from fastapi.middleware.cors import CORSMiddleware
 
 from routers.enhancement import router as enhancement_router
 from routers.edge_detection import router as edge_router
+from routers.transforms import router as transforms_router
 
 # ──────────────────────────────────────────────
 #  App configuration
@@ -21,7 +22,7 @@ app = FastAPI(
         "Handles image enhancement, edge detection, and transformations. "
         "Only accessible from the YOLAB Node.js backend — not exposed to the internet."
     ),
-    version="1.0.0",
+    version="1.3.0",
     docs_url="/docs",
     redoc_url="/redoc",
 )
@@ -42,6 +43,7 @@ app.add_middleware(
 # ──────────────────────────────────────────────
 app.include_router(enhancement_router)
 app.include_router(edge_router)
+app.include_router(transforms_router)
 
 
 # ──────────────────────────────────────────────
@@ -50,7 +52,7 @@ app.include_router(edge_router)
 @app.get("/health", tags=["Health"])
 async def health():
     """Returns 200 OK when the service is running."""
-    return {"status": "ok", "service": "OnePic", "version": "1.0.0", "phases": ["enhancement", "edge-detection"]}
+    return {"status": "ok", "service": "OnePic", "version": "1.3.0", "phases": ["enhancement", "edge-detection", "transforms"]}
 
 
 # ──────────────────────────────────────────────
