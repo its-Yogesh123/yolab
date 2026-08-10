@@ -94,21 +94,85 @@ export default function PricingPage() {
 
   const handleUpgrade = async () => {
     if (!session) { window.location.href = "/auth/login"; return; }
+
+    if (!window.Razorpay) {
+      toast.error("Payment gateway failed to load. Please refresh and try again.");
+      return;
+    }
+
     setUpgrading(true);
     try {
-      const res = await fetch(`${API}/api/subscription/upgrade`, {
+      // Step 1 — Create Razorpay order on backend
+      const orderRes = await fetch(`${API}/api/subscription/create-order`, {
         method: "POST",
         credentials: "include",
       });
-      const data = await res.json();
-      if (res.ok) {
-        toast.success("🎉 Upgraded to Pro successfully!");
-        fetchSubscription();
-      } else {
-        toast.error(data.message || "Upgrade failed.");
+      const orderData = await orderRes.json();
+      if (!orderRes.ok) {
+        toast.error(orderData.error || "Could not initiate payment.");
+        throw new Error(orderData.error || "create-order failed");
       }
+
+      const { orderId, amount, currency, key_id } = orderData;
+
+      // Step 2 — Open Razorpay Checkout modal
+      await new Promise((resolve, reject) => {
+        const rzp = new window.Razorpay({
+          key:         key_id,
+          amount,
+          currency,
+          order_id:    orderId,
+          name:        "YoLab",
+          description: "Pro Plan — ₹1/month (test)",
+          image:       `${window.location.origin}/favicon.svg`,
+          theme:       { color: "#d4d4d4" },
+          prefill: {
+            name:  session?.name  || "",
+            email: session?.email || "",
+          },
+          handler: async (response) => {
+            // Step 3 — Verify payment on backend
+            try {
+              const verifyRes = await fetch(`${API}/api/subscription/verify`, {
+                method:  "POST",
+                credentials: "include",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({
+                  razorpay_order_id:   response.razorpay_order_id,
+                  razorpay_payment_id: response.razorpay_payment_id,
+                  razorpay_signature:  response.razorpay_signature,
+                }),
+              });
+              const verifyData = await verifyRes.json();
+              if (verifyRes.ok) {
+                toast.success("🎉 Pro plan activated! Enjoy unlimited access.");
+                fetchSubscription();
+                resolve();
+              } else {
+                toast.error(verifyData.error || "Payment verification failed.");
+                reject(new Error(verifyData.error));
+              }
+            } catch (e) {
+              toast.error("Verification request failed. Contact support with your payment ID.");
+              reject(e);
+            }
+          },
+          modal: {
+            ondismiss: () => {
+              toast.info("Payment cancelled.");
+              reject(new Error("dismissed"));
+            },
+          },
+        });
+        rzp.on("payment.failed", (resp) => {
+          toast.error(`Payment failed: ${resp.error.description}`);
+          reject(new Error(resp.error.description));
+        });
+        rzp.open();
+      });
+
     } catch {
-      toast.error("Something went wrong.");
+      // Errors already toasted above — just ensure upgrading state resets
     } finally {
       setUpgrading(false);
     }
@@ -311,8 +375,9 @@ export default function PricingPage() {
                 </div>
 
                 <div>
-                  <span className="text-4xl font-extrabold">₹299</span>
+                  <span className="text-4xl font-extrabold">₹1</span>
                   <span className="text-neutral-500 text-sm ml-1">/ month</span>
+                  <span className="ml-2 text-xs text-amber-400 font-medium">(test price)</span>
                 </div>
 
                 <ul className="space-y-3">

@@ -27,6 +27,18 @@ function nextMonthDate() {
   return d;
 }
 
+// Proper sub-schema for each payment transaction record
+const paymentSchema = new mongoose.Schema(
+  {
+    razorpayOrderId:   { type: String },
+    razorpayPaymentId: { type: String },
+    amount:            { type: Number }, // stored in paise
+    currency:          { type: String, default: 'INR' },
+    paidAt:            { type: Date, default: Date.now },
+  },
+  { _id: false }
+);
+
 const subscriptionSchema = new mongoose.Schema(
   {
     userId: {
@@ -47,12 +59,14 @@ const subscriptionSchema = new mongoose.Schema(
     },
     expiresAt: {
       type: Date,
-      default: null, // null = no expiry (free plan or lifetime pro)
+      default: null,
     },
     usage: {
       srv001: { type: serviceUsageSchema, default: () => ({}) },
       srv002: { type: serviceUsageSchema, default: () => ({}) },
     },
+    // Payment history — one entry per successful Razorpay transaction
+    payments: { type: [paymentSchema], default: [] },
   },
   { timestamps: true }
 );

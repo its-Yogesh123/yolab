@@ -96,3 +96,39 @@ export const cannyEdge = (req, res) => {
   const high_threshold = parseFloat(req.body?.high_threshold) || 0.15;
   return proxyToOnePic("/edge/canny", req, res, { sigma, low_threshold, high_threshold });
 };
+
+// ──────────────────────────────────────────────
+//  Phase 3 — Image Transforms
+// ──────────────────────────────────────────────
+
+export const rotateImage = (req, res) => {
+  const angle = parseFloat(req.body?.angle) || 90;
+  const expand = req.body?.expand === 'true' || true;
+  return proxyToOnePic("/transform/rotate", req, res, { angle, expand });
+};
+
+export const flipImage = (req, res) => {
+  const direction = req.body?.direction || "horizontal";
+  return proxyToOnePic("/transform/flip", req, res, { direction });
+};
+
+export const resizeImage = (req, res) => {
+  const width  = parseInt(req.body?.width, 10)  || 800;
+  const height = parseInt(req.body?.height, 10) || 600;
+  const keep_aspect = req.body?.keep_aspect !== 'false';
+  return proxyToOnePic("/transform/resize", req, res, { width, height, keep_aspect });
+};
+
+export const brightnessContrast = (req, res) => {
+  const brightness = parseFloat(req.body?.brightness) || 1.0;
+  const contrast   = parseFloat(req.body?.contrast)   || 1.0;
+  return proxyToOnePic("/transform/brightness-contrast", req, res, { brightness, contrast });
+};
+
+export const grayscale = (req, res) => {
+  return proxyToOnePic("/transform/grayscale", req, res);
+};
+
+export const invertColors = (req, res) => {
+  return proxyToOnePic("/transform/invert", req, res);
+};

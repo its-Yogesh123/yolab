@@ -38,6 +38,11 @@ mongoose
 
 /************************** Middleware **************************/
 app.use(express.urlencoded({ extended: false }));
+
+// Razorpay webhook needs the raw body for HMAC-SHA256 signature verification.
+// This MUST come before express.json() so the webhook route gets Buffer, not parsed JSON.
+app.use('/api/subscription/webhook', express.raw({ type: 'application/json' }));
+
 app.use(express.json());
 app.use(cookieParser());
 app.use(

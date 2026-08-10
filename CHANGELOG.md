@@ -10,17 +10,63 @@ Versioning follows [Semantic Versioning](https://semver.org/).
 
 > Changes planned but not yet released.
 
-- Payment gateway integration (Razorpay / Stripe) for Pro plan upgrades
+- Self-service refund flow for Pro plan cancellations
 - Centralized SSO authentication system
-- Image processing service (srv003)
-- File conversion service (srv004)
-- Public REST API for external developers
+- Maester — PDF Analyzer service (srv004)
+- File conversion service (srv005)
+- Public REST API for external developers with API key management
 - Admin dashboard UI for managing user subscriptions
-- Migration of selected modules to microservices (Strangler Pattern)
+- Monthly renewal reminders via email
 
 ---
 
-## [2.1.0] — 2026-08-04
+## [1.3.0] — 2026-08-11
+
+### Added — Razorpay Payment Integration
+
+- **`backend/modules/subscription/payment.controller.js`** — Full payment lifecycle:
+  - `createOrder` — Creates a Razorpay order (amount from `subscription.plans.js`, stored in paise). Lazy-initializes the Razorpay SDK client so missing env keys don't crash the server at startup. Receipt field is capped at 40 chars per Razorpay's limit.
+  - `verifyPayment` — Verifies the `razorpay_order_id|razorpay_payment_id` HMAC-SHA256 signature against `RAZORPAY_KEY_SECRET`. On success: sets `plan = "pro"`, `status = "active"`, sets `expiresAt = now + 30 days`, pushes a payment record, and fires an email receipt (non-blocking).
+  - `razorpayWebhook` — Server-to-server fallback for `payment.captured` events. Correctly reads the raw `Buffer` body (via `Buffer.toString("utf8")`) for HMAC verification instead of `JSON.stringify` (which would produce the wrong hash). Idempotency guard on `razorpayOrderId` prevents double-activation if both `/verify` and the webhook fire.
+
+- **`backend/modules/subscription/payment.mailer.js`** — Nodemailer-based email receipt utility. Silently skips (no crash) if `MAIL_*` env vars are not configured. Sends a styled dark-themed HTML receipt with: plan name, amount paid, Payment ID, Order ID, and plan expiry date. Receipt links back to `/pricing`.
+
+- **New routes** in `subscription.routes.js`:
+  - `POST /api/subscription/create-order` — login required
+  - `POST /api/subscription/verify` — login required
+  - `POST /api/subscription/webhook` — no cookie auth, HMAC-verified
+
+- **`backend/server.js`** — Added `express.raw({ type: 'application/json' })` middleware scoped to `/api/subscription/webhook` **before** `express.json()`. This preserves the raw request body that Razorpay needs to verify its webhook signature.
+
+- **`frontend/index.html`** — Added Razorpay Checkout SDK `<script>` tag in `<head>` so `window.Razorpay` is available when `PricingPage` mounts.
+
+- **`frontend/src/subscription/PricingPage.jsx`** — Replaced fake direct-upgrade with the real 3-step Razorpay flow:
+  1. `POST /create-order` → get `orderId`, `key_id`
+  2. Open `window.Razorpay(...)` modal with `prefill`, `ondismiss`, and `payment.failed` handlers
+  3. On success: `POST /verify` → confirm HMAC → show toast → refresh subscription UI
+
+### Added — OnePic Phase 3: Image Transforms
+
+- **`backend/modules/onepic/onepic.controller.js`** — 6 new controllers proxied to `/transform/*` on the OnePic microservice: `rotateImage`, `flipImage`, `resizeImage`, `brightnessContrast`, `grayscale`, `invertColors`.
+- **`backend/modules/onepic/onepic.routes.js`** — 6 new routes: `POST /rotate`, `/flip`, `/resize`, `/brightness-contrast`, `/grayscale`, `/invert`.
+- **`frontend/src/image-processing/page.jsx`** — Phase 3 group added to `PHASE_GROUPS` with full parameter definitions (angle, direction, width/height, brightness/contrast factors) and descriptions.
+
+### Changed
+
+- **`backend/modules/subscription/subscription.model.js`** — Added a proper `paymentSchema = new mongoose.Schema(..., { _id: false })` and `payments: { type: [paymentSchema], default: [] }` field to the subscription document. Previously an inline array literal (Mongoose mixed type — no validation or default enforcement).
+- **`backend/modules/subscription/subscription.plans.js`** — `pro.price` set to `1` (₹1) for test mode. Change to `299` before production.
+- **`payment.md`** — Added full failure handling section documenting what is and isn't covered.
+
+### Fixed
+
+- **`payment.controller.js`** — Razorpay client is now lazy-instantiated inside `getRazorpay()`. Previously `new Razorpay(...)` ran at module-load time and crashed the server if env keys were missing.
+- **`payment.controller.js` (webhook)** — Signature verification now uses `req.body.toString("utf8")` on the raw Buffer. Previously used `JSON.stringify(req.body)` which produced a mangled string, making all webhook signatures permanently invalid.
+- **`subscription.model.js`** — `payments` field migrated from inline array-of-objects literal to a proper Mongoose sub-schema with `_id: false`.
+- **`PricingPage.jsx`** — Replaced bare `return` after failed `create-order` call with `throw` so the `catch` block handles cleanup uniformly and the loading spinner always stops correctly.
+
+---
+
+## [1.2.0] — 2026-08-04
 
 ### Added — Analytics System (Lean MVP)
 
@@ -61,7 +107,7 @@ Versioning follows [Semantic Versioning](https://semver.org/).
 
 ---
 
-## [2.0.0] — 2026-07-29
+## [1.1.0] — 2026-07-29
 
 ### Added — Subscription System (Platform-Level)
 

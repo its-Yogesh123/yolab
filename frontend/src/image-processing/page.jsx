@@ -145,6 +145,73 @@ const PHASE_GROUPS = [
       },
     ],
   },
+  {
+    phase: 'Phase 3',
+    label: 'Image Transforms',
+    color: '#34d399',
+    ops: [
+      {
+        id: 'rotate',
+        label: 'Rotate',
+        endpoint: '/api/image/rotate',
+        description: 'Rotate the image by any angle. Enable "Expand canvas" to automatically grow the output so no pixels are cropped at the edges.',
+        icon: '↻',
+        params: [
+          { key: 'angle', label: 'Angle (°)', type: 'range', min: -180, max: 180, step: 1, default: 90, unit: '°' },
+          { key: 'expand', label: 'Expand Canvas', type: 'toggle', default: true },
+        ],
+      },
+      {
+        id: 'flip',
+        label: 'Flip',
+        endpoint: '/api/image/flip',
+        description: 'Mirror the image along the horizontal or vertical axis. Useful for creating reflections or correcting mirrored captures.',
+        icon: '⇄',
+        params: [
+          { key: 'direction', label: 'Direction', type: 'select', options: ['horizontal', 'vertical'], default: 'horizontal', unit: '' },
+        ],
+      },
+      {
+        id: 'resize',
+        label: 'Resize',
+        endpoint: '/api/image/resize',
+        description: 'Resize the image to specific pixel dimensions. Keep aspect ratio enabled to avoid distortion — the longest edge is matched to your target.',
+        icon: '⤢',
+        params: [
+          { key: 'width',  label: 'Width (px)',  type: 'range', min: 64, max: 4096, step: 1, default: 800, unit: 'px' },
+          { key: 'height', label: 'Height (px)', type: 'range', min: 64, max: 4096, step: 1, default: 600, unit: 'px' },
+          { key: 'keep_aspect', label: 'Keep Aspect Ratio', type: 'toggle', default: true },
+        ],
+      },
+      {
+        id: 'brightness-contrast',
+        label: 'Brightness & Contrast',
+        endpoint: '/api/image/brightness-contrast',
+        description: 'Independently adjust brightness and contrast using multiplicative factors. Values below 1 darken / flatten; values above 1 brighten / punch.',
+        icon: '◑',
+        params: [
+          { key: 'brightness', label: 'Brightness', type: 'range', min: 0.1, max: 3.0, step: 0.05, default: 1.0, unit: 'x' },
+          { key: 'contrast',   label: 'Contrast',   type: 'range', min: 0.1, max: 3.0, step: 0.05, default: 1.0, unit: 'x' },
+        ],
+      },
+      {
+        id: 'grayscale',
+        label: 'Grayscale',
+        endpoint: '/api/image/grayscale',
+        description: 'Convert a colour image to grayscale using the standard luminance formula (0.299R + 0.587G + 0.114B). Output is a single-channel image.',
+        icon: '◐',
+        params: [],
+      },
+      {
+        id: 'invert',
+        label: 'Invert Colors',
+        endpoint: '/api/image/invert',
+        description: 'Produce a photographic negative by subtracting every pixel value from 255. Works on both RGB and grayscale images.',
+        icon: '◍',
+        params: [],
+      },
+    ],
+  },
 ];
 
 const ALL_OPS = PHASE_GROUPS.flatMap((g) => g.ops);

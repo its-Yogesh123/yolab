@@ -9,6 +9,12 @@ import {
   prewittEdge,
   laplacianEdge,
   cannyEdge,
+  rotateImage,
+  flipImage,
+  resizeImage,
+  brightnessContrast,
+  grayscale,
+  invertColors,
 } from "./onepic.controller.js";
 
 const router = Router();
@@ -73,6 +79,28 @@ router.post("/laplacian", upload.single("file"), laplacianEdge);
 
 /** POST /api/image/canny — optional body: sigma, low_threshold, high_threshold */
 router.post("/canny", upload.single("file"), cannyEdge);
+
+// ──────────────────────────────────────────────
+//  Phase 3 — Image Transforms
+// ──────────────────────────────────────────────
+
+/** POST /api/image/rotate — body: angle (float), expand (bool) */
+router.post("/rotate", upload.single("file"), rotateImage);
+
+/** POST /api/image/flip — body: direction ("horizontal"|"vertical") */
+router.post("/flip", upload.single("file"), flipImage);
+
+/** POST /api/image/resize — body: width (int), height (int), keep_aspect (bool) */
+router.post("/resize", upload.single("file"), resizeImage);
+
+/** POST /api/image/brightness-contrast — body: brightness (float 0–3), contrast (float 0–3) */
+router.post("/brightness-contrast", upload.single("file"), brightnessContrast);
+
+/** POST /api/image/grayscale */
+router.post("/grayscale", upload.single("file"), grayscale);
+
+/** POST /api/image/invert */
+router.post("/invert", upload.single("file"), invertColors);
 
 // ──────────────────────────────────────────────
 //  Multer error handler

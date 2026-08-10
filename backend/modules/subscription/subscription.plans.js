@@ -19,7 +19,7 @@ export const PLANS = {
   },
   pro: {
     label: "Pro",
-    price: 299,    // ₹299/month placeholder (plug in Razorpay/Stripe later)
+    price: 1,    // ₹1 for testing — change to 299 before production
     description: "For power users and teams",
     limits: {
       srv001: Infinity,
