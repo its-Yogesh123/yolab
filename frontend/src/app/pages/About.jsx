@@ -9,7 +9,6 @@ import {
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
-import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer } from "recharts";
 import {
   Users,
   Zap,
@@ -339,59 +338,54 @@ export default function AboutPage() {
               </p>
             </div>
 
-            {/* Right: Day-wise Traffic & Activity Chart */}
-            <div className="w-full lg:w-2/3 h-64 sm:h-80 bg-background/50 rounded-xl p-4 border border-border/40">
+            {/* Right: Native Day-wise Traffic Summary (Fallback without recharts) */}
+            <div className="w-full lg:w-2/3 bg-background/50 rounded-xl p-6 border border-border/40">
+              <div className="flex items-center justify-between mb-4 pb-4 border-b border-border/50">
+                <h3 className="font-semibold text-neutral-300">Activity History (Last 30 Days)</h3>
+                <div className="flex items-center gap-4 text-xs">
+                  <span className="flex items-center gap-1.5"><span className="w-2 h-2 rounded-full bg-violet-500" />Total Activity</span>
+                  <span className="flex items-center gap-1.5"><span className="w-2 h-2 rounded-full bg-blue-500" />Active Users</span>
+                </div>
+              </div>
+              
               {statsLoading ? (
-                <div className="w-full h-full flex items-center justify-center">
-                  <Loader2 className="w-8 h-8 animate-spin text-muted-foreground" />
+                <div className="flex items-center justify-center py-10">
+                  <Loader2 className="w-6 h-6 animate-spin text-muted-foreground" />
                 </div>
               ) : chartData.length === 0 ? (
-                <div className="w-full h-full flex items-center justify-center text-muted-foreground">
+                <div className="text-center py-10 text-muted-foreground text-sm">
                   Not enough historical data yet.
                 </div>
               ) : (
-                <ResponsiveContainer width="100%" height="100%">
-                  <LineChart data={chartData} margin={{ top: 10, right: 10, left: -20, bottom: 0 }}>
-                    <CartesianGrid strokeDasharray="3 3" stroke="rgba(255,255,255,0.05)" vertical={false} />
-                    <XAxis 
-                      dataKey="date" 
-                      stroke="rgba(255,255,255,0.4)" 
-                      fontSize={12} 
-                      tickLine={false}
-                      axisLine={false}
-                      dy={10}
-                    />
-                    <YAxis 
-                      stroke="rgba(255,255,255,0.4)" 
-                      fontSize={12} 
-                      tickLine={false}
-                      axisLine={false}
-                      tickFormatter={(value) => value > 999 ? (value/1000).toFixed(1)+'k' : value}
-                    />
-                    <Tooltip 
-                      contentStyle={{ backgroundColor: '#111', borderColor: '#333', borderRadius: '8px', fontSize: '14px' }}
-                      itemStyle={{ color: '#fff' }}
-                    />
-                    <Line 
-                      type="monotone" 
-                      name="Total Activities" 
-                      dataKey="totalActivity" 
-                      stroke="#8b5cf6" 
-                      strokeWidth={3}
-                      dot={false}
-                      activeDot={{ r: 6, fill: '#8b5cf6' }} 
-                    />
-                    <Line 
-                      type="monotone" 
-                      name="Active Users (Traffic)" 
-                      dataKey="traffic" 
-                      stroke="#3b82f6" 
-                      strokeWidth={3}
-                      dot={false}
-                      activeDot={{ r: 6, fill: '#3b82f6' }} 
-                    />
-                  </LineChart>
-                </ResponsiveContainer>
+                <div className="flex items-end gap-1 h-48 overflow-x-auto pb-2 scrollbar-thin">
+                  {chartData.map((day, i) => {
+                    const maxVal = Math.max(...chartData.map(d => Math.max(d.totalActivity, d.traffic, 1)));
+                    const activityHeight = `${(day.totalActivity / maxVal) * 100}%`;
+                    const trafficHeight = `${(day.traffic / maxVal) * 100}%`;
+                    
+                    return (
+                      <div key={i} className="flex-1 flex flex-col items-center justify-end min-w-[30px] group relative">
+                        {/* Tooltip on hover */}
+                        <div className="absolute bottom-full mb-2 hidden group-hover:block z-20 bg-neutral-900 border border-neutral-800 rounded-md p-2 text-xs shadow-xl whitespace-nowrap">
+                          <p className="font-semibold mb-1 text-neutral-200">{day.date}</p>
+                          <p className="text-violet-400">Activity: {day.totalActivity}</p>
+                          <p className="text-blue-400">Users: {day.traffic}</p>
+                        </div>
+                        
+                        {/* Bars */}
+                        <div className="w-full flex items-end justify-center gap-0.5 px-0.5 h-full opacity-80 hover:opacity-100 transition-opacity">
+                          <div className="w-1/2 bg-violet-500 rounded-t-sm" style={{ height: activityHeight, minHeight: '2px' }} />
+                          <div className="w-1/2 bg-blue-500 rounded-t-sm" style={{ height: trafficHeight, minHeight: '2px' }} />
+                        </div>
+                        
+                        {/* Label */}
+                        <span className="text-[9px] text-muted-foreground mt-2 truncate max-w-full hidden sm:block">
+                          {i % 3 === 0 ? day.date : ''}
+                        </span>
+                      </div>
+                    );
+                  })}
+                </div>
               )}
             </div>
 

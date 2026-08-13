@@ -16,6 +16,7 @@ import QRCodeService from "./qr-code/page";
 import PricingPage from "./subscription/PricingPage";
 import AnalyticsDashboard from "./admin/AnalyticsDashboard";
 import ImageProcessingPage from "./image-processing/page";
+import MaesterPage from "./maester/page";
 const API = import.meta.env.VITE_API_URL || "http://localhost:8000";
 createRoot(document.getElementById('root')).render(
   <StrictMode>
@@ -37,6 +38,7 @@ createRoot(document.getElementById('root')).render(
          <Route path="pricing" element={<PricingPage />} />
          <Route path="admin/analytics" element={<AnalyticsDashboard />} />
          <Route path="image-processing" element={<ImageProcessingPage />} />
+         <Route path="maester" element={<MaesterPage />} />
 
       </Routes>
     </BrowserRouter>
