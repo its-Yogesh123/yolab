@@ -1,282 +1,372 @@
 import { useSession } from '@/context/sessions';
 import React, { useState, useEffect } from 'react';
-import { 
-  FiMenu, FiX, FiSun, FiMoon, FiGithub, FiUser, 
-  FiSettings, FiLogOut, FiHome, FiInfo, FiBriefcase, FiMail 
+import {
+  FiMenu, FiX, FiSun, FiMoon, FiGithub,
+  FiUser, FiSettings, FiLogOut,
 } from 'react-icons/fi';
-import { QrCode, Link, Zap, BarChart3 } from 'lucide-react';
+import { QrCode, Link2, Zap, BarChart3, BookOpen, Image } from 'lucide-react';
 
+/* ─── nav link definitions ─────────────────────────────────── */
 const navLinks = [
-  { name: 'Home', icon: FiHome, href: '/' },
-  { name: 'About', icon: FiInfo, href: '/about' },
-  { name: 'Short URL', icon: FiMail, href: '/short-url' },
-  { name: 'QR Code', icon: FiMail, href: '/qr-code' },
-  { name: 'Pricing', icon: FiMail, href: '/pricing' },
+  { name: 'Home',         href: '/' },
+  { name: 'Short URL',    href: '/short-url' },
+  { name: 'QR Code',      href: '/qr-code' },
+  { name: 'OnePic',      href: '/image-processing' },
+  { name: 'Pricing',      href: '/pricing' },
 ];
 
+const mobileLinks = [
+  { name: 'Home',         href: '/',               Icon: null },
+  { name: 'Short URL',    href: '/short-url',      Icon: Link2 },
+  { name: 'QR Code',      href: '/qr-code',        Icon: QrCode },
+  { name: 'OnePic',      href: '/image-processing',        Icon: BookOpen },
+  { name: 'Pricing',      href: '/pricing',        Icon: Zap },
+];
+
+/* ─── helpers ───────────────────────────────────────────────── */
+function isActive(href) {
+  if (typeof window === 'undefined') return false;
+  return href === '/'
+    ? window.location.pathname === '/'
+    : window.location.pathname.startsWith(href);
+}
+
+/* ─── component ─────────────────────────────────────────────── */
 export default function Navbar() {
-  const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
-  const [isProfileMenuOpen, setIsProfileMenuOpen] = useState(false);
-  const [isDarkMode, setIsDarkMode] = useState(true);
-  const { session ,logout} = useSession();
-  // Handle Dark Mode Theme Toggle
+  const [mobileOpen,  setMobileOpen]  = useState(false);
+  const [profileOpen, setProfileOpen] = useState(false);
+  const [isDarkMode,  setIsDarkMode]  = useState(true);
+  const { session, logout } = useSession();
+
+  /* dark-mode class */
   useEffect(() => {
-    if (isDarkMode) {
-      document.documentElement.classList.add('dark');
-    } else {
-      document.documentElement.classList.remove('dark');
-    }
+    document.documentElement.classList.toggle('dark', isDarkMode);
   }, [isDarkMode]);
 
-  // Handle Escape Key to close drawers
+  /* escape key */
   useEffect(() => {
-    const handleEscape = (e) => {
-      if (e.key === 'Escape') {
-        setIsMobileMenuOpen(false);
-        setIsProfileMenuOpen(false);
-      }
+    const handler = (e) => {
+      if (e.key === 'Escape') { setMobileOpen(false); setProfileOpen(false); }
     };
-    document.addEventListener('keydown', handleEscape);
-    return () => document.removeEventListener('keydown', handleEscape);
+    document.addEventListener('keydown', handler);
+    return () => document.removeEventListener('keydown', handler);
   }, []);
 
-  // Prevent background scrolling when a drawer is open
+  /* body scroll lock */
   useEffect(() => {
-    if (isMobileMenuOpen || isProfileMenuOpen) {
-      document.body.style.overflow = 'hidden';
-    } else {
-      document.body.style.overflow = 'unset';
-    }
-  }, [isMobileMenuOpen, isProfileMenuOpen]);
+    document.body.style.overflow = (mobileOpen || profileOpen) ? 'hidden' : '';
+    return () => { document.body.style.overflow = ''; };
+  }, [mobileOpen, profileOpen]);
+
+  const closeAll = () => { setMobileOpen(false); setProfileOpen(false); };
 
   return (
     <>
-      <nav className="sticky top-0 z-40 w-full border-b border-neutral-800 bg-[#050505]/90 backdrop-blur-md transition-colors duration-300">
-        <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
-          <div className="flex h-16 items-center justify-between relative">
-            
-            {/* Mobile: Left - Hamburger */}
-            <div className="flex md:hidden">
-              <button
-                type="button"
-                onClick={() => setIsMobileMenuOpen(true)}
-                className="p-2 text-neutral-300 hover:bg-neutral-900 rounded-md transition-colors"
-                aria-controls="mobile-menu"
-                aria-expanded={isMobileMenuOpen}
-                aria-label="Open main menu"
-              >
-                <FiMenu className="h-6 w-6" aria-hidden="true" />
-              </button>
-            </div>
+      {/* ── Main bar ── */}
+      <nav className="sticky top-0 z-40 w-full border-b border-neutral-800 bg-[#050505]/90 backdrop-blur-md">
+        <div className="mx-auto max-w-7xl px-4 sm:px-6">
 
-            {/* Desktop: Left / Mobile: Center - Logo */}
-            <div className="flex-shrink-0 md:flex-1 md:flex md:items-center absolute md:static left-1/2 -translate-x-1/2 md:translate-x-0">
-              <a href="#" className="flex items-center gap-2 text-xl font-bold text-white">
-                {/* <div className="h-8 w-8 rounded-lg bg-blue-600 flex items-center justify-center text-white">
-                  <span className="font-bold text-lg">L</span>
-                </div> */}
-                <span className="hidden sm:block">yolab</span>
-              </a>
-            </div>
+          {/* ── MOBILE bar (< md) ── */}
+          <div className="flex md:hidden h-16 items-center justify-between">
+            {/* Left: hamburger */}
+            <button
+              onClick={() => setMobileOpen(true)}
+              className="h-9 w-9 flex items-center justify-center rounded-md text-neutral-400 hover:text-white hover:bg-neutral-900 transition-colors"
+              aria-label="Open menu"
+            >
+              <FiMenu className="h-5 w-5" />
+            </button>
 
-            {/* Desktop: Center - Navigation Links */}
-            <div className="hidden md:flex md:flex-1 md:justify-center">
-              <ul className="flex space-x-8">
-                {navLinks.map((link) => (
-                  <li key={link.name}>
-                    <a
-                      href={link.href}
-                      className="text-neutral-300 hover:text-white font-medium transition-colors"
-                    >
-                      {link.name}
-                    </a>
-                  </li>
-                ))}
+            {/* Centre: logo */}
+            <a href="/" className="flex items-center gap-2 text-white select-none">
+              <div className="flex h-6 w-6 items-center justify-center rounded bg-neutral-200 text-neutral-950 font-black text-xs leading-none">
+                Y
+              </div>
+              <span className="text-base font-bold tracking-tight">
+                yo<span className="text-neutral-400 font-medium">LAB</span>
+              </span>
+            </a>
+
+            {/* Right: avatar */}
+            <button
+              onClick={() => setProfileOpen(true)}
+              className="h-8 w-8 rounded-full overflow-hidden border-2 border-transparent hover:border-neutral-600 transition-all"
+              aria-label="Open account menu"
+            >
+              <img
+                src={
+                  session?.img ||
+                  `https://api.dicebear.com/7.x/initials/svg?seed=${encodeURIComponent(session?.name || 'Y')}&backgroundColor=262626&textColor=e5e5e5`
+                }
+                alt="Avatar"
+                className="h-full w-full object-cover"
+              />
+            </button>
+          </div>
+
+          {/* ── DESKTOP bar (≥ md) — 3-col grid ── */}
+          <div className="hidden md:grid h-16 grid-cols-[auto_1fr_auto] items-center gap-6">
+
+            {/* Col 1: Logo */}
+            <a href="/" className="flex items-center gap-2 text-white select-none">
+              <div className="flex h-7 w-7 items-center justify-center rounded-md bg-neutral-200 text-neutral-950 font-black text-sm leading-none">
+                Y
+              </div>
+              <span className="text-lg font-bold tracking-tight">
+                yo<span className="text-neutral-400 font-medium">LAB</span>
+              </span>
+            </a>
+
+            {/* Col 2: Centre links */}
+            <div className="flex justify-center">
+              <ul className="flex items-center gap-1">
+                {navLinks.map((link) => {
+                  const active = isActive(link.href);
+                  return (
+                    <li key={link.name}>
+                      <a
+                        href={link.href}
+                        className={`px-3 py-1.5 rounded-md text-sm font-medium transition-colors duration-150 ${
+                          active
+                            ? 'text-white bg-neutral-800'
+                            : 'text-neutral-400 hover:text-white hover:bg-neutral-900'
+                        }`}
+                      >
+                        {link.name}
+                      </a>
+                    </li>
+                  );
+                })}
               </ul>
             </div>
 
-            {/* Desktop & Mobile: Right Side */}
-            <div className="flex items-center justify-end gap-2 md:flex-1">
-              {/* Theme Toggle (Hidden on mobile, moved to sidebar) */}
+            {/* Col 3: Right actions */}
+            <div className="flex items-center gap-1">
+              {/* Theme toggle */}
               <button
                 onClick={() => setIsDarkMode(!isDarkMode)}
-                className="hidden md:flex p-2 text-neutral-300 hover:bg-neutral-900 rounded-full transition-colors"
-                aria-label="Toggle Dark Mode"
+                className="hidden md:flex h-8 w-8 items-center justify-center rounded-md text-neutral-400 hover:text-white hover:bg-neutral-900 transition-colors"
+                aria-label="Toggle colour scheme"
               >
-                {isDarkMode ? <FiSun className="h-5 w-5" /> : <FiMoon className="h-5 w-5" />}
+                {isDarkMode ? <FiSun className="h-4 w-4" /> : <FiMoon className="h-4 w-4" />}
               </button>
 
-              {/* GitHub Icon */}
+              {/* GitHub */}
               <a
                 href="https://github.com/its-Yogesh123/yolab"
                 target="_blank"
                 rel="noreferrer"
-                className="p-2 text-neutral-300 hover:bg-neutral-900 rounded-full transition-colors"
-                aria-label="GitHub Repository"
+                className="hidden md:flex h-8 w-8 items-center justify-center rounded-md text-neutral-400 hover:text-white hover:bg-neutral-900 transition-colors"
+                aria-label="GitHub"
               >
-                <FiGithub className="h-5 w-5" />
+                <FiGithub className="h-4 w-4" />
               </a>
 
-              {/* Profile Avatar Button */}
+              {/* Divider */}
+              <div className="hidden md:block h-4 w-px bg-neutral-800 mx-1" />
+
+              {/* Avatar / profile trigger */}
               <button
-                onClick={() => setIsProfileMenuOpen(true)}
-                className="ml-2 h-8 w-8 rounded-full bg-neutral-800 border-2 border-transparent hover:border-neutral-400 focus:outline-none focus:ring-2 focus:ring-neutral-500 focus:ring-offset-2 focus:ring-offset-black transition-all overflow-hidden"
-                aria-expanded={isProfileMenuOpen}
-                aria-label="Open user menu"
+                onClick={() => setProfileOpen(true)}
+                className="h-8 w-8 rounded-full overflow-hidden border-2 border-transparent hover:border-neutral-600 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-neutral-500 transition-all"
+                aria-label="Open account menu"
+                aria-expanded={profileOpen}
               >
-                <img 
-                  src="https://api.dicebear.com/7.x/avataaars/svg?seed=Felix" 
-                  alt="User avatar" 
+                <img
+                  src={
+                    session?.img ||
+                    `https://api.dicebear.com/7.x/initials/svg?seed=${encodeURIComponent(session?.name || 'Y')}&backgroundColor=262626&textColor=e5e5e5`
+                  }
+                  alt="Avatar"
                   className="h-full w-full object-cover"
                 />
               </button>
+
             </div>
-          </div>
+
+          </div>{/* end desktop grid */}
         </div>
       </nav>
 
-      {/* --- Overlays and Drawers --- */}
 
-      {/* Backdrop for both drawers */}
-      {(isMobileMenuOpen || isProfileMenuOpen) && (
-        <div 
-          className="fixed inset-0 z-40 bg-black/50 backdrop-blur-sm transition-opacity"
+      {/* ── Backdrop ── */}
+      {(mobileOpen || profileOpen) && (
+        <div
+          className="fixed inset-0 z-40 bg-black/60 backdrop-blur-sm"
           aria-hidden="true"
-          onClick={() => {
-            setIsMobileMenuOpen(false);
-            setIsProfileMenuOpen(false);
-          }}
+          onClick={closeAll}
         />
       )}
 
-      {/* Mobile Menu Drawer (Left Side) */}
-      <div 
-        className={`fixed top-0 left-0 z-50 h-full w-72 bg-[#0a0a0a] shadow-2xl transition-transform duration-300 ease-in-out ${
-          isMobileMenuOpen ? 'translate-x-0' : '-translate-x-full'
+      {/* ── Mobile nav drawer (left) ── */}
+      <div
+        className={`fixed inset-y-0 left-0 z-50 w-72 bg-[#0a0a0a] border-r border-neutral-800 shadow-2xl transition-transform duration-300 ease-in-out ${
+          mobileOpen ? 'translate-x-0' : '-translate-x-full'
         }`}
         role="dialog"
         aria-modal="true"
+        aria-label="Mobile navigation"
       >
-        <div className="flex items-center justify-between border-b border-neutral-800 p-4">
-          <span className="text-lg font-bold text-white">Menu</span>
-          <button 
-            onClick={() => setIsMobileMenuOpen(false)}
-            className="rounded-md p-2 text-neutral-400 hover:bg-neutral-900"
+        {/* Drawer header */}
+        <div className="flex items-center justify-between border-b border-neutral-800 px-4 py-4">
+          <a href="/" className="flex items-center gap-2 text-white" onClick={closeAll}>
+            <div className="flex h-6 w-6 items-center justify-center rounded bg-neutral-200 text-neutral-950 font-black text-xs">
+              Y
+            </div>
+            <span className="text-base font-bold tracking-tight">
+              yo<span className="text-neutral-400 font-medium">LAB</span>
+            </span>
+          </a>
+          <button
+            onClick={() => setMobileOpen(false)}
+            className="h-8 w-8 flex items-center justify-center rounded-md text-neutral-400 hover:text-white hover:bg-neutral-900"
             aria-label="Close menu"
           >
             <FiX className="h-5 w-5" />
           </button>
         </div>
-        <div className="p-4 flex flex-col h-[calc(100vh-65px)] justify-between">
-          <ul className="space-y-2">
-            {navLinks.map((link) => (
-              <li key={link.name}>
-                <a
-                  href={link.href}
-                  className="flex items-center gap-3 rounded-md px-4 py-3 text-neutral-300 hover:bg-neutral-900 font-medium transition-colors"
-                >
-                  <link.icon className="h-5 w-5 text-neutral-500" />
-                  {link.name}
-                </a>
-              </li>
-            ))}
-          </ul>
-          
-          {/* Theme toggle for mobile */}
-          <div className="border-t border-neutral-800 pt-4">
-            <button
-              onClick={() => setIsDarkMode(!isDarkMode)}
-              className="flex w-full items-center gap-3 rounded-md px-4 py-3 text-neutral-300 hover:bg-neutral-900 font-medium transition-colors"
-            >
-              {isDarkMode ? <FiSun className="h-5 w-5 text-neutral-500" /> : <FiMoon className="h-5 w-5 text-neutral-500" />}
-              {isDarkMode ? 'Light Mode' : 'Dark Mode'}
-            </button>
-          </div>
+
+        {/* Links */}
+        <nav className="flex flex-col gap-1 p-3 flex-1">
+          {mobileLinks.map(({ name, href, Icon }) => {
+            const active = isActive(href);
+            return (
+              <a
+                key={name}
+                href={href}
+                onClick={closeAll}
+                className={`flex items-center gap-3 rounded-md px-3 py-2.5 text-sm font-medium transition-colors ${
+                  active
+                    ? 'bg-neutral-800 text-white'
+                    : 'text-neutral-400 hover:bg-neutral-900 hover:text-white'
+                }`}
+              >
+                {Icon && <Icon className="h-4 w-4 shrink-0" />}
+                {name}
+              </a>
+            );
+          })}
+        </nav>
+
+        {/* Mobile footer */}
+        <div className="border-t border-neutral-800 p-3">
+          <button
+            onClick={() => { setIsDarkMode(!isDarkMode); }}
+            className="flex w-full items-center gap-3 rounded-md px-3 py-2.5 text-sm font-medium text-neutral-400 hover:bg-neutral-900 hover:text-white transition-colors"
+          >
+            {isDarkMode ? <FiSun className="h-4 w-4" /> : <FiMoon className="h-4 w-4" />}
+            {isDarkMode ? 'Light mode' : 'Dark mode'}
+          </button>
         </div>
       </div>
 
-      {/* Profile Drawer (Right Side) */}
-      <div 
-        className={`fixed top-0 right-0 z-50 h-full w-80 bg-[#0a0a0a] shadow-2xl transition-transform duration-300 ease-in-out ${
-          isProfileMenuOpen ? 'translate-x-0' : 'translate-x-full'
+      {/* ── Profile drawer (right) ── */}
+      <div
+        className={`fixed inset-y-0 right-0 z-50 w-80 bg-[#0a0a0a] border-l border-neutral-800 shadow-2xl transition-transform duration-300 ease-in-out ${
+          profileOpen ? 'translate-x-0' : 'translate-x-full'
         }`}
         role="dialog"
         aria-modal="true"
+        aria-label="Account menu"
       >
-        <div className="flex items-center justify-between border-b border-neutral-800 p-4">
-          <span className="text-lg font-bold text-white">Account</span>
-          <button 
-            onClick={() => setIsProfileMenuOpen(false)}
-            className="rounded-md p-2 text-neutral-400 hover:bg-neutral-900"
-            aria-label="Close profile menu"
+        {/* Drawer header */}
+        <div className="flex items-center justify-between border-b border-neutral-800 px-4 py-4">
+          <span className="text-sm font-semibold text-white">Account</span>
+          <button
+            onClick={() => setProfileOpen(false)}
+            className="h-8 w-8 flex items-center justify-center rounded-md text-neutral-400 hover:text-white hover:bg-neutral-900"
+            aria-label="Close account menu"
           >
             <FiX className="h-5 w-5" />
           </button>
         </div>
-        
+
+        {/* User card */}
         <div className="p-4">
-          <div className="flex items-center gap-4 mb-6 p-4 rounded-md bg-[#111111] border border-neutral-800">
-            <img 
-              src={session? session.img :"https://api.dicebear.com/7.x/avataaars/svg?seed=Felix"} 
-              alt="User" 
-              className="h-12 w-12 rounded-full bg-neutral-800"
+          <div className="flex items-center gap-3 rounded-lg bg-neutral-900 border border-neutral-800 p-4 mb-5">
+            <img
+              src={
+                session?.img ||
+                `https://api.dicebear.com/7.x/initials/svg?seed=${encodeURIComponent(session?.name || 'Y')}&backgroundColor=262626&textColor=e5e5e5`
+              }
+              alt="Avatar"
+              className="h-10 w-10 rounded-full bg-neutral-800 shrink-0"
             />
-            <div>
-              <p className="font-semibold text-white">
-                {session ? session.name : 'Sign in'}
+            <div className="min-w-0">
+              <p className="text-sm font-semibold text-white truncate">
+                {session ? session.name : 'Guest'}
               </p>
-              <p className="text-sm text-neutral-400">
-                {session ? session.email : 'Sign in to access your account'}
+              <p className="text-xs text-neutral-500 truncate mt-0.5">
+                {session ? session.email : 'Sign in to continue'}
               </p>
             </div>
           </div>
 
           {session ? (
             <>
-              <ul className="space-y-1">
+              <ul className="space-y-0.5">
                 <li>
-                  <button className="w-full flex items-center gap-3 rounded-md px-4 py-3 text-left text-neutral-300 hover:bg-neutral-900 transition-colors">
-                    <FiUser className="h-5 w-5 text-neutral-500" />
-                    <span className="font-medium">Your Profile</span>
+                  <button className="w-full flex items-center gap-3 rounded-md px-3 py-2.5 text-sm text-neutral-400 hover:text-white hover:bg-neutral-900 transition-colors text-left">
+                    <FiUser className="h-4 w-4 shrink-0" />
+                    Your Profile
                   </button>
                 </li>
                 <li>
-                  <a href="/pricing" className="w-full flex items-center gap-3 rounded-md px-4 py-3 text-left text-neutral-300 hover:bg-neutral-900 transition-colors">
-                    <Zap className="h-5 w-5 text-violet-400" />
-                    <span className="font-medium">Subscription &amp; Pricing</span>
+                  <a
+                    href="/pricing"
+                    onClick={closeAll}
+                    className="flex items-center gap-3 rounded-md px-3 py-2.5 text-sm text-neutral-400 hover:text-white hover:bg-neutral-900 transition-colors"
+                  >
+                    <Zap className="h-4 w-4 shrink-0" />
+                    Subscription &amp; Pricing
                   </a>
                 </li>
-                {session?.role === "admin" && (
+                {session?.role === 'admin' && (
                   <li>
-                    <a href="/admin/analytics" className="w-full flex items-center gap-3 rounded-md px-4 py-3 text-left text-neutral-300 hover:bg-neutral-900 transition-colors">
-                      <BarChart3 className="h-5 w-5 text-neutral-400" />
-                      <span className="font-medium">Analytics Dashboard</span>
+                    <a
+                      href="/admin/analytics"
+                      onClick={closeAll}
+                      className="flex items-center gap-3 rounded-md px-3 py-2.5 text-sm text-neutral-400 hover:text-white hover:bg-neutral-900 transition-colors"
+                    >
+                      <BarChart3 className="h-4 w-4 shrink-0" />
+                      Analytics Dashboard
                     </a>
                   </li>
                 )}
                 <li>
-                  <button className="w-full flex items-center gap-3 rounded-md px-4 py-3 text-left text-neutral-300 hover:bg-neutral-900 transition-colors">
-                    <FiSettings className="h-5 w-5 text-neutral-500" />
-                    <span className="font-medium">Settings</span>
+                  <button className="w-full flex items-center gap-3 rounded-md px-3 py-2.5 text-sm text-neutral-400 hover:text-white hover:bg-neutral-900 transition-colors text-left">
+                    <FiSettings className="h-4 w-4 shrink-0" />
+                    Settings
                   </button>
                 </li>
               </ul>
 
-              <div className="mt-6 border-t border-neutral-800 pt-6">
-                <button onClick = {logout} className="w-full flex items-center gap-3 rounded-md px-4 py-3 text-left text-red-400 hover:bg-red-950/30 transition-colors font-medium">
-                  <FiLogOut className="h-5 w-5" />
+              <div className="mt-4 border-t border-neutral-800 pt-4">
+                <button
+                  onClick={() => { logout(); closeAll(); }}
+                  className="w-full flex items-center gap-3 rounded-md px-3 py-2.5 text-sm text-red-400 hover:text-red-300 hover:bg-red-950/30 transition-colors text-left font-medium"
+                >
+                  <FiLogOut className="h-4 w-4 shrink-0" />
                   Sign out
                 </button>
               </div>
             </>
           ) : (
-            <div className="mt-6 border-t border-neutral-800 pt-6">
+            <div className="mt-2">
               <a
                 href="/auth/login"
-                className="w-full flex items-center gap-3 rounded-md px-4 py-3 text-left text-neutral-200 hover:bg-neutral-900 transition-colors font-medium"
+                onClick={closeAll}
+                className="flex w-full items-center justify-center gap-2 rounded-md bg-neutral-200 hover:bg-white px-4 py-2.5 text-sm font-semibold text-neutral-900 transition-colors"
               >
-                <FiUser className="h-5 w-5" />
+                <FiUser className="h-4 w-4" />
                 Sign in
+              </a>
+              <a
+                href="/auth/register"
+                onClick={closeAll}
+                className="mt-2 flex w-full items-center justify-center gap-2 rounded-md border border-neutral-800 hover:bg-neutral-900 px-4 py-2.5 text-sm font-medium text-neutral-400 hover:text-white transition-colors"
+              >
+                Create account
               </a>
             </div>
           )}
