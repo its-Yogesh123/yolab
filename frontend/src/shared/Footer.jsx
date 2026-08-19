@@ -23,7 +23,7 @@ const Footer = () => {
             <h3 className="text-lg font-semibold text-gray-400 mb-4">Quick Links</h3>
             <ul className="space-y-2">
               <li>
-                <a href="/" className="hover:text-white transition-colors duration-200">
+                <a href="/about" className="hover:text-white transition-colors duration-200">
                 About Us
                 </a>
               </li>
@@ -33,17 +33,17 @@ const Footer = () => {
                 </a>
               </li>
               <li>
-                <a href="/projects" className="hover:text-white transition-colors duration-200">
+                <a href="/products" className="hover:text-white transition-colors duration-200">
                   Products
                 </a>
               </li>
               <li>
-                <a href="/blog" className="hover:text-white transition-colors duration-200">
+                <a href="/privacy-policy" className="hover:text-white transition-colors duration-200">
                   Privacy Policy
                 </a>
               </li>
               <li>
-                <a href="/blog" className="hover:text-white transition-colors duration-200">
+                <a href="/privacy-policy" className="hover:text-white transition-colors duration-200">
                   Refund Policy
                 </a>
               </li>
@@ -60,17 +60,17 @@ const Footer = () => {
                 </a>
               </li>
               <li>
-                <a href="#" className="hover:text-white transition-colors duration-200">
+                <a href="/short-url" className="hover:text-white transition-colors duration-200">
                   URL Shortner
                 </a>
               </li>
               <li>
-                <a href="#" className="hover:text-white transition-colors duration-200">
+                <a href="/image-processing" className="hover:text-white transition-colors duration-200">
                   Image Editing
                 </a>
               </li>
               <li>
-                <a href="#" className="hover:text-white transition-colors duration-200">
+                <a href="/qr-code" className="hover:text-white transition-colors duration-200">
                  QR Generator
                 </a>
               </li>

@@ -16,6 +16,7 @@ import subscriptionRoutes from "./modules/subscription/subscription.routes.js";
 import analyticsRoutes from "./modules/analytics/analytics.routes.js";
 import feedbackRoutes from "./modules/feedback/feedback.routes.js";
 import onepicRoutes from "./modules/onepic/onepic.routes.js";
+import maesterRoutes from "./modules/maester/maester.routes.js";
 
 // Middleware imports
 import { isLoggedIn } from "./modules/auth/middlewares/authenticate.js";
@@ -82,6 +83,9 @@ app.use("/srv002", isLoggedIn, srv002Routes);
 // OnePic: Image Processing — login required, proxied to Python microservice
 // app.use("/api/image", onepicRoutes);    // developer
 app.use("/api/image", isLoggedIn, onepicRoutes);
+
+// Maester: RAG PDF Chat — login required
+app.use("/api/maester", isLoggedIn, maesterRoutes);
 
 /************************** Root & Test Routes **************************/
 app.get("/", (req, res) => {

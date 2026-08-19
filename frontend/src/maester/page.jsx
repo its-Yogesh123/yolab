@@ -14,7 +14,8 @@ import { useNavigate } from "react-router-dom";
 import Footer from "@/shared/Footer";
 
 const API = import.meta.env.VITE_API_URL || "http://localhost:8000";
-const PYTHON_API = import.meta.env.VITE_PYTHON_API_URL || "http://localhost:8001";
+// All Maester endpoints go through the Node gateway (/api/maester/*)
+// which in turn proxies to the Python service.
 
 // ─────────────────────────────────────────────
 // Sub-components
@@ -276,6 +277,8 @@ function ChatPanel({ uploadedDoc, session, navigate }) {
   const [messages, setMessages] = useState([]);
   const [input, setInput] = useState("");
   const [loading, setLoading] = useState(false);
+  // Keep a trimmed history list for context (role + content only)
+  const historyRef = useRef([]);
   const bottomRef = useRef(null);
   const inputRef = useRef(null);
 
@@ -302,24 +305,34 @@ function ChatPanel({ uploadedDoc, session, navigate }) {
       isStreaming: true,
     };
 
+    // Snapshot history before adding new user message
+    const currentHistory = [...historyRef.current];
+
     setMessages((prev) => [...prev, userMsg, botMsg]);
     setInput("");
     setLoading(true);
 
     try {
-      const res = await fetch(`${PYTHON_API}/query`, {
+      const res = await fetch(`${API}/api/maester/query`, {
         method: "POST",
         credentials: "include",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
           docId: uploadedDoc?.docId,
           query: userMsg.content,
-          sessionId: session?._id,
+          history: currentHistory,
         }),
       });
 
       const data = await res.json();
       if (!res.ok) throw new Error(data.message || "Query failed");
+
+      // Update history for next turn
+      historyRef.current = [
+        ...currentHistory,
+        { role: "user",      content: userMsg.content },
+        { role: "assistant", content: data.answer },
+      ].slice(-12); // keep last 6 turns
 
       setMessages((prev) =>
         prev.map((m) =>
@@ -343,6 +356,7 @@ function ChatPanel({ uploadedDoc, session, navigate }) {
   };
 
   const handleRate = async (messageId, rating) => {
+    const msg = messages.find(m => m.id === messageId);
     try {
       await fetch(`${API}/api/maester/feedback`, {
         method: "POST",
@@ -351,8 +365,8 @@ function ChatPanel({ uploadedDoc, session, navigate }) {
         body: JSON.stringify({
           messageId,
           docId: uploadedDoc?.docId,
+          query: msg?.content || "",
           rating,
-          sessionId: session?._id,
         }),
       });
     } catch {
@@ -363,6 +377,7 @@ function ChatPanel({ uploadedDoc, session, navigate }) {
   const clearChat = () => {
     if (messages.length === 0) return;
     setMessages([]);
+    historyRef.current = [];
     toast.info("Chat cleared.");
   };
 

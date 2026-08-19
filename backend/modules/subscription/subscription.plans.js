@@ -15,6 +15,7 @@ export const PLANS = {
     limits: {
       srv001: 5,   // URL Shortener: 5 links/month
       srv002: 10,  // QR Generator:  10 QR codes/month
+      srv003: 5,   // Maester:       5 PDF uploads/month
     },
   },
   pro: {
@@ -24,6 +25,7 @@ export const PLANS = {
     limits: {
       srv001: Infinity,
       srv002: Infinity,
+      srv003: Infinity,
     },
   },
 };

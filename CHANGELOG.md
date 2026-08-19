@@ -20,6 +20,62 @@ Versioning follows [Semantic Versioning](https://semver.org/).
 
 ---
 
+## [0.4.0] — 2026-08-15
+
+### Added — Maester: RAG PDF Chat Service (srv003)
+
+#### Python Service (`python_service/`)
+- **`main.py`** — FastAPI app on port 8002 with CORS.
+- **`utils/pdf_parser.py`** — PyMuPDF text extraction (full-doc + page-by-page).
+- **`utils/chunker.py`** — Overlapping word-based chunker (`CHUNK_SIZE` / `CHUNK_OVERLAP` env config).
+- **`utils/embedding.py`** — Lazy-loaded `sentence-transformers` (`all-MiniLM-L6-v2`). No external API key.
+- **`utils/vector_store.py`** — Per-doc FAISS flat-L2 index persisted to `data/faiss/`. Supports index, retrieve, delete.
+- **`utils/llm.py`** — OpenAI RAG prompt builder + chat completion. Cites page numbers; respects last 6-turn conversation history.
+- **`routers/upload.py`** — `POST /maester/upload`: PDF ingest pipeline (extract → chunk → embed → index).
+- **`routers/query.py`** — `POST /maester/query`: embed query → FAISS retrieve → LLM answer + source refs.
+- **`requirements.txt`** — Pinned: FastAPI, uvicorn, PyMuPDF, sentence-transformers, faiss-cpu, openai, pydantic, python-dotenv.
+
+#### Node Gateway (`backend/modules/maester/`)
+- **`maester.model.js`** — `MaesterDoc` + `MaesterFeedback` MongoDB schemas.
+- **`maester.controller.js`** — Gateway controllers proxying to Python; ownership-checked.
+- **`maester.routes.js`** — Auth-gated routes at `/api/maester/*`: upload, query, feedback, docs list, delete.
+
+#### Frontend (`frontend/src/maester/page.jsx`)
+- Maester-specific sticky navbar with mobile dropdown.
+- Drag-&-drop PDF upload dropzone (10 MB, progress, success state with page/chunk count).
+- Two-column responsive layout (upload left, chat right; stacks on mobile).
+- Chat panel: user/bot bubbles, animated typing dots, page-source badges, conversation history.
+- Inline 5-star `FeedbackWidget` after each bot reply.
+- "How it works" 3-step explainer with scroll-in animations.
+- Free-plan upgrade CTA card.
+- Shared `Footer`.
+
+#### Wiring
+- **`backend/server.js`** — Mounted `/api/maester` (login required).
+- **`backend/.env`** — `MAESTER_PYTHON_URL=http://localhost:8002`.
+- **`subscription.plans.js`** — `srv003`: 5 uploads/month Free, unlimited Pro.
+- **`frontend/src/main.jsx`** — Added `/maester` route.
+- **`shared/Navigation.jsx`** — Maester added to global nav.
+
+---
+
+## [1.3.1] — 2026-08-11
+
+
+### Added — Analytics Enhancements
+
+- **`backend/modules/analytics/analytics.model.js`** — Added `imageProcessing` usage counter to `DailyStats.serviceUsage`.
+- **`backend/modules/onepic/onepic.controller.js`** — Integrated `trackActivity` to fire after every successful image processing operation, incrementing the global `imageProcessing` counter and logging activity to the feed.
+- **`backend/modules/analytics/analytics.controller.js`** — Enhanced endpoints:
+  - `getSummary`: Now includes all-time image processing totals in the payload.
+  - `getPublicStats`: Now returns `totalImagesProcessed` and a new `dailyHistory` array (last 30 days) for charting.
+- **`frontend/src/admin/AnalyticsDashboard.jsx`** — Added "Images Processed" to the top stats grid and the Service Popularity panel.
+- **`frontend/src/app/pages/About.jsx`**:
+  - Added a massive "Total Activities" hero stat (sum of QR + URLs + Images).
+  - Designed a native CSS-based daily activity history chart displaying the last 30 days of traffic without external charting dependencies.
+
+--- 
+
 ## [1.3.0] — 2026-08-11
 
 ### Added — Razorpay Payment Integration
